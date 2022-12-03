@@ -28,6 +28,7 @@ int parseOBJ(FILE* fp, List* vertex_list, List* face_list){
 	char* v_cmp = "v"; char* f_cmp = "f";
 	int ret;
 	printf("--- Parsing ---\n");
+	List* temp_list; listInit(&temp_list);
 	while(1){
 		size_t s;
 		char* lineptr = NULL;
@@ -69,9 +70,27 @@ int parseOBJ(FILE* fp, List* vertex_list, List* face_list){
 			}
 			free(PTN);
 			float color[3] = {0.0, 0.0, 0.0};
-			listInsert(face_list, crtNode((void**) vtx, 0, color, 1.0), face_list->size);
+			listInsert(temp_list, crtNode((void**) vtx, 0, color, 1.0), temp_list->size);
 		}
 	}
+	float color[3] = {0.0, 0.0, 0.0};
+	for(int i=0;i<temp_list->size;i++){
+		Node* fc_idxs = listGetittem(temp_list, i);
+		int* ptr_vtx_idx = *((int**)fc_idxs->points);
+		//printf("%d %d %d %d\n", ptr_vtx_idx[0]-1, ptr_vtx_idx[1]-1, ptr_vtx_idx[2]-1, ptr_vtx_idx[3]-1);
+		//printf("%f\n", (*((float**)listGetittem(vertex_list, ptr_vtx_idx[3]-1)->points))[0]);
+		Node* ptr_vtl;
+
+		ptr_vtl = crtNode(listGetittem(vertex_list, ptr_vtx_idx[0]-1)->points, 0, color, 1.0);
+		listInsert(face_list, ptr_vtl, face_list->size);
+		ptr_vtl = crtNode(listGetittem(vertex_list, ptr_vtx_idx[1]-1)->points, 0, color, 1.0);
+		listInsert(face_list, ptr_vtl, face_list->size);
+		ptr_vtl = crtNode(listGetittem(vertex_list, ptr_vtx_idx[2]-1)->points, 0, color, 1.0);
+		listInsert(face_list, ptr_vtl, face_list->size);
+		ptr_vtl = crtNode(listGetittem(vertex_list, ptr_vtx_idx[3]-1)->points, 0, color, 1.0);
+		listInsert(face_list, ptr_vtl, face_list->size);
+	}
+
 }
 /*
 int main(int argc, char** argv){
