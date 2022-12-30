@@ -1,4 +1,5 @@
 #ifndef Scene
+#define Scene
 double angle_x, angle_y, angle_z;
 #define x_max 0.6
 #define y_max 0.3
