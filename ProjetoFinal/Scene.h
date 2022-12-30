@@ -76,7 +76,7 @@ void draw_Borders(){
 void draw_Door(){
     if(!((angle_y > 270) || (angle_y < 90))){//draw door, in front border
 
-        glBegin(GL_QUADS);//desenha a porta
+        glBegin(GL_QUADS);//draw the door
         glColor3f(0.7,0.4,0.2);
         glVertex3f(+x_max*0.0-x_max/2.0,+2.0*y_max/3.0,-z_max+0.01);
         glVertex3f(-x_max*1.0+x_max/6.0,+2.0*y_max/3.0,-z_max+0.01);
@@ -84,7 +84,7 @@ void draw_Door(){
         glVertex3f(+x_max*0.0-x_max/2.0,-1.0*y_max/1.0,-z_max+0.01);
         glEnd();
 
-        glPushMatrix();
+        glPushMatrix();//draw door handle 
             glTranslatef(-x_max/2.0-0.04,-y_max/4.0,-z_max+0.01);
             glColor3f(1.0,0.0,0.0);
             glutWireSphere(0.01,20,10);
