@@ -1,6 +1,6 @@
 #ifndef Scene
 #define Scene
-
+#include "texture.h"
 double angle_x, angle_y, angle_z;
 #define x_max 0.6
 #define y_max 0.3
@@ -53,11 +53,13 @@ void draw_Borders(){
             glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
         }
         i = 3;
-            glColor3f(1.0,1.0,0.0);//draw floor border
-            glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
+            glBindTexture ( GL_TEXTURE_2D,texture_id);//draw floor border
+
+            glColor3f(1.0,1.0,1.0);
+            glTexCoord2f(0.0f, 0.0f);glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
+            glTexCoord2f(0.0f, 1.0f);glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
+            glTexCoord2f(1.0f, 1.0f);glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
+            glTexCoord2f(1.0f, 0.0f);glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
 
         i = 4;
         glColor3f(0.0,0.0,1.0);
@@ -221,28 +223,28 @@ void draw_Stretcher(){
 
         glTranslatef(0.0,0.001,-0.001);
         glPushMatrix();//draw the first support of the stretcher
-            glColor3f(0.0,1.0,0.0);
+            glColor3f(0.8,0.8,0.8);
             glTranslatef(0.17,-0.24,z_max-0.02);
             glScalef(0.5,1.2,0.4);
             glutSolidCube(0.1);
         glPopMatrix();
 
         glPushMatrix();//draw the second support of the stretcher
-            glColor3f(0.0,1.0,0.0);
+            glColor3f(0.8,0.8,0.8);
             glTranslatef(-0.17,-0.24,z_max-0.02);
             glScalef(0.5,1.2,0.4);
             glutSolidCube(0.1);
         glPopMatrix();
 
         glPushMatrix();//draw the third support of the stretcher
-            glColor3f(0.0,1.0,0.0);
+            glColor3f(0.8,0.8,0.8);
             glTranslatef(+0.17,-0.24,z_max-0.18);
             glScalef(0.5,1.2,0.4);
             glutSolidCube(0.1);
         glPopMatrix();
 
         glPushMatrix();//draw the forth support of the stretcher
-            glColor3f(0.0,1.0,0.0);
+            glColor3f(0.8,0.8,0.8);
             glTranslatef(-0.17,-0.24,z_max-0.18);
             glScalef(0.5,1.2,0.4);
             glutSolidCube(0.1);
