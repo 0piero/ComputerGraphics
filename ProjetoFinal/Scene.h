@@ -254,17 +254,84 @@ void draw_Stretcher(){
 
 void draw_Ball(){
     glColor3f(0.2,0.5,0.6);
-
-    glTranslatef(-x_max+0.2,-y_max+0.101,z_max-0.101);
-    glutSolidSphere(0.1,20,10);
+    glPushMatrix();
+        glTranslatef(-x_max+0.2,-y_max+0.101,z_max-0.101);
+        glutSolidSphere(0.1,20,10);
+    glPopMatrix();
 }
 
+void draw_Shelf(){
+    glColor3f(1.0,0.5,0.0);
+    glPushMatrix();//draw the top shelf
+        glTranslatef(0.1,0.0,-z_max+0.081);
+        glScalef(3.0,0.1,0.8);
+        glutSolidCube(0.2);
+    glPopMatrix();
+
+    glPushMatrix();//draw the middel shelf
+        glTranslatef(0.1,(-y_max+0.011)/2.0,-z_max+0.081);
+        glScalef(3.0,0.1,0.8);
+        glutSolidCube(0.2);
+    glPopMatrix();
+
+    glPushMatrix();//draw the below shelf
+        glTranslatef(0.1,-y_max+0.011,-z_max+0.081);
+        glScalef(3.0,0.1,0.8);
+        glutSolidCube(0.2);
+    glPopMatrix();
+
+    glPushMatrix();//draw the middle_back support
+        glTranslatef(0.1,(-y_max+0.011)/2.0,-z_max+0.031);
+        glScalef(0.2,y_max/0.1,0.2);
+        glutSolidCube(0.1);
+    glPopMatrix();
+
+    glPushMatrix();//draw the right_back support
+        glTranslatef(0.35,(-y_max+0.011)/2.0,-z_max+0.031);
+        glScalef(0.2,y_max/0.1,0.2);
+        glutSolidCube(0.1);
+    glPopMatrix();
+
+    glPushMatrix();//draw the left_back support
+        glTranslatef(-0.15,(-y_max+0.011)/2.0,-z_max+0.031);
+        glScalef(0.2,y_max/0.1,0.2);
+        glutSolidCube(0.1);
+    glPopMatrix();
+
+    glPushMatrix();//draw the middle_front support
+        glTranslatef(0.1,(-y_max+0.011)/2.0,-z_max+0.126);
+        glScalef(0.2,y_max/0.1,0.2);
+        glutSolidCube(0.1);
+    glPopMatrix();
+
+    glPushMatrix();//draw the right_front support
+        glTranslatef(0.35,(-y_max+0.011)/2.0,-z_max+0.126);
+        glScalef(0.2,y_max/0.1,0.2);
+        glutSolidCube(0.1);
+    glPopMatrix();
+
+    glPushMatrix();//draw the left_front support
+        glTranslatef(-0.15,(-y_max+0.011)/2.0,-z_max+0.126);
+        glScalef(0.2,y_max/0.1,0.2);
+        glutSolidCube(0.1);
+    glPopMatrix();
+}
+
+void draw_Painting(){
+    //desenhar um ou dois quadros com textura
+}
+
+void draw_Speakers(){
+    //desenhar duas caixas de som
+}
 
 void draw_Objects(){
     draw_Door();
     draw_Window();
     draw_Stretcher();
     draw_Ball();
+    draw_Shelf();
+    draw_Painting();
 }
 
 draw_Scene(double alpha, double beta, double gama){
