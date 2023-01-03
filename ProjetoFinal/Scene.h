@@ -318,58 +318,61 @@ void draw_Shelf(){
 }
 
 void draw_Painting(){
-    double border_length = 0.2;
-    glPushMatrix();//draw the right painting
-        glColor3f(1.0,0.0,0.0);
-        glTranslatef(-x_max+0.001,0.0,+z_max/2.0);
-        glRotatef(90.0,0.0,1.0,0.0);
-        glScalef(0.15,0.25,0.25);
-        glBegin(GL_QUADS);//draw the border
-            glVertex3f(+x_max+border_length,+y_max+border_length,0.0);
-            glVertex3f(+x_max+border_length,-y_max-border_length,0.0);
-            glVertex3f(-x_max-border_length,-y_max-border_length,0.0);
-            glVertex3f(-x_max-border_length,+y_max+border_length,0.0);
-        glEnd();
-        glPushMatrix();//draw the texture
-            glTranslatef(0.0,0.0,+0.001);
-            glColor3f(1.0,1.0,1.0);
-            glBegin(GL_QUADS);
-                glVertex3f(+x_max,+y_max,0.0);
-                glVertex3f(+x_max,-y_max,0.0);
-                glVertex3f(-x_max,-y_max,0.0);
-                glVertex3f(-x_max,+y_max,0.0);
+
+    if(!((angle_y > 180) && (angle_y < 360) || (angle_y < 0))){//draw left border
+        double border_length = 0.2;
+        glPushMatrix();//draw the right painting
+            glColor3f(1.0,0.0,0.0);
+            glTranslatef(-x_max+0.001,0.0,+z_max/2.0);
+            glRotatef(90.0,0.0,1.0,0.0);
+            glScalef(0.15,0.25,0.25);
+            glBegin(GL_QUADS);//draw the border
+                glVertex3f(+x_max+border_length,+y_max+border_length,0.0);
+                glVertex3f(+x_max+border_length,-y_max-border_length,0.0);
+                glVertex3f(-x_max-border_length,-y_max-border_length,0.0);
+                glVertex3f(-x_max-border_length,+y_max+border_length,0.0);
             glEnd();
+            glPushMatrix();//draw the texture
+                glTranslatef(0.0,0.0,+0.001);
+                glColor3f(1.0,1.0,1.0);
+                glBegin(GL_QUADS);
+                    glVertex3f(+x_max,+y_max,0.0);
+                    glVertex3f(+x_max,-y_max,0.0);
+                    glVertex3f(-x_max,-y_max,0.0);
+                    glVertex3f(-x_max,+y_max,0.0);
+                glEnd();
+            glPopMatrix();
+
+            glPushMatrix();//draw the support of the paintind
+
+            glPopMatrix();
+
         glPopMatrix();
 
-        glPushMatrix();//draw the support of the paintind
-
-        glPopMatrix();
-
-    glPopMatrix();
-
-    glPushMatrix();//draw the left painting
-        glColor3f(1.0,0.0,0.0);
-        glTranslatef(-x_max+0.001,0.0,-z_max/2.0);
-        glRotatef(90.0,0.0,1.0,0.0);
-        glScalef(0.15,0.25,0.25);
-        glBegin(GL_QUADS);
-            glVertex3f(+x_max+border_length,+y_max+border_length,0.0);
-            glVertex3f(+x_max+border_length,-y_max-border_length,0.0);
-            glVertex3f(-x_max-border_length,-y_max-border_length,0.0);
-            glVertex3f(-x_max-border_length,+y_max+border_length,0.0);
-        glEnd();
-        glPushMatrix();
-            glTranslatef(0.0,0.0,+0.001);
-            glColor3f(1.0,1.0,1.0);
+        glPushMatrix();//draw the left painting
+            glColor3f(1.0,0.0,0.0);
+            glTranslatef(-x_max+0.001,0.0,-z_max/2.0);
+            glRotatef(90.0,0.0,1.0,0.0);
+            glScalef(0.15,0.25,0.25);
             glBegin(GL_QUADS);
-                glVertex3f(+x_max,+y_max,0.0);
-                glVertex3f(+x_max,-y_max,0.0);
-                glVertex3f(-x_max,-y_max,0.0);
-                glVertex3f(-x_max,+y_max,0.0);
+                glVertex3f(+x_max+border_length,+y_max+border_length,0.0);
+                glVertex3f(+x_max+border_length,-y_max-border_length,0.0);
+                glVertex3f(-x_max-border_length,-y_max-border_length,0.0);
+                glVertex3f(-x_max-border_length,+y_max+border_length,0.0);
             glEnd();
-        glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0,0.0,+0.001);
+                glColor3f(1.0,1.0,1.0);
+                glBegin(GL_QUADS);
+                    glVertex3f(+x_max,+y_max,0.0);
+                    glVertex3f(+x_max,-y_max,0.0);
+                    glVertex3f(-x_max,-y_max,0.0);
+                    glVertex3f(-x_max,+y_max,0.0);
+                glEnd();
+            glPopMatrix();
 
-    glPopMatrix();
+        glPopMatrix();
+    }
 }
 
 void draw_Speakers(){
