@@ -1,4 +1,3 @@
-
 #ifndef texture
 #define texture
 #include <stdio.h>
@@ -9,7 +8,7 @@ typedef struct BMPImagem
     char *data;
 }BMPImage;
 
-GLuint texture_id;
+GLuint texture_id, texture_id2;
 
 void getBitmapImageData( char *pFileName, BMPImage *pImage ){
     FILE *pFile = NULL;
@@ -68,22 +67,22 @@ void getBitmapImageData( char *pFileName, BMPImage *pImage ){
 }
 
 
-/*Fun��o para Carregar uma imagem .BMP */
-void CarregaTextura(char* Filename)
-{
+/*Função para Carregar uma imagem .BMP */
+void CarregaTextura(char* Filename){
 
     BMPImage textura;
 
     glBindTexture(GL_TEXTURE_2D,texture_id);
+
     getBitmapImageData( Filename, &textura);
 
-    // Define os par�metros da textura
-    glBindTexture ( GL_TEXTURE_2D, texture_id);
+    // Define os parâmetros da textura
+    glBindTexture(GL_TEXTURE_2D,texture_id);
 
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST  );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     // Give the image to OpenGL
     // Define uma textura bidimensional
@@ -94,7 +93,7 @@ void CarregaTextura(char* Filename)
 
 /* **********************************************************************
   void init(void)
-		Inicializa os par�metros globais de OpenGL
+		Inicializa os par‚metros globais de OpenGL
 
  ********************************************************************** */
 void init(void) {
@@ -103,11 +102,5 @@ void init(void) {
          glGenTextures(1,&texture_id);
 
 }
-
-/* **********************************************************************
-  void reshape( int w, int h )
-		trata o redimensionamento da janela OpenGL
-
- ********************************************************************** */
 
 #endif
