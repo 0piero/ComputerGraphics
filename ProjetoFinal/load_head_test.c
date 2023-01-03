@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <errno.h>
 #include "List.h"
 #include "objfp.h"
 
@@ -74,7 +75,7 @@ void display(){
 	glRotatef(ang_x,1.0,0.0,0.0);
 	glRotatef(ang_y,0.0,1.0,0.0);
 	glRotatef(ang_z,0.0,0.0,1.0);
-	glScalef(0.7,0.7,0.7);
+	glScalef(0.1,0.1,0.1);
 
 
 	/* começa desenhar */

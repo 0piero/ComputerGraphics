@@ -18,6 +18,54 @@ int read_args(char** argv, int argc, FILE** fp){
 	}
 	return 0;
 }
+size_t getline_(char **lineptr, size_t *n, FILE *stream) {
+    size_t pos;
+    int c;
+
+    if (lineptr == NULL || stream == NULL || n == NULL) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    c = getc(stream);
+    if (c == EOF) {
+        return -1;
+    }
+
+    if (*lineptr == NULL) {
+        *lineptr = malloc(128);
+        if (*lineptr == NULL) {
+            return -1;
+        }
+        *n = 128;
+    }
+
+    pos = 0;
+    while(c != EOF) {
+        if (pos + 1 >= *n) {
+            size_t new_size = *n + (*n >> 2);
+            if (new_size < 128) {
+                new_size = 128;
+            }
+            char *new_ptr = realloc(*lineptr, new_size);
+            if (new_ptr == NULL) {
+                return -1;
+            }
+            *n = new_size;
+            *lineptr = new_ptr;
+        }
+
+        ((unsigned char *)(*lineptr))[pos ++] = c;
+        if (c == '\n') {
+            break;
+        }
+        c = getc(stream);
+    }
+
+    (*lineptr)[pos] = '\0';
+    return pos;
+}
+
 int parseOBJ(FILE* fp, List* vertex_list, List* face_list){
 	char delim[] = " \t\n"; char face_delim[] = "/";
 	char* v_cmp = "v"; char* f_cmp = "f";
@@ -27,7 +75,7 @@ int parseOBJ(FILE* fp, List* vertex_list, List* face_list){
 	while(1){
 		size_t s;
 		char* lineptr = NULL;
-		ret = getline(&lineptr, &s, fp);
+		ret = getline_(&lineptr, &s, fp);
 
 		if(ret==-1){printf("--- End Parsing ---\n"); break;}
 		char* ptr = strtok(lineptr, delim);
