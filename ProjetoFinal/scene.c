@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include <stdio.h>
 double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
-//double angx = 0.0, angy = 270.0, angz = 0.0, deltaAng = 5.0;
+//double angx = 0.0, angy = 90.0, angz = 0.0, deltaAng = 5.0;
 int x_janela = 600, y_janela = 600;
 
 
@@ -14,6 +14,7 @@ void draw(){
     glEnable(GL_DEPTH_TEST);
     glColor3f(0.0, 0.0 ,0.0);
     glLoadIdentity();
+    glScalef(1.2,1.2,1.2);
     glRotatef(angx,1,0,0);
     glRotatef(angy,0,1,0);
     glRotatef(angz,0,0,1);
