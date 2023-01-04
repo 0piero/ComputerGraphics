@@ -1,5 +1,3 @@
-
-
 #ifndef HEADER_OBJFP
 #define HEADER_OBJFP
 int read_args(char** argv, int argc, FILE** fp);
@@ -103,7 +101,7 @@ void vtx_store(char* ptr, List* v_list){
 		listInsert(v_list, crtNode((void**) vtx, 0, color, 1.0), v_list->size);
 		
 		Node* test = listGetittem(v_list, v_list->size-1);
-		printf("vtx %f %f %f\n", (*((float**)test->points))[0], (*((float**)test->points))[1], (*((float**)test->points))[2]);
+		//printf("vtx %f %f %f\n", (*((float**)test->points))[0], (*((float**)test->points))[1], (*((float**)test->points))[2]);
 	}
 }
 
@@ -205,7 +203,7 @@ int parseOBJ(
 
 			ptr = strtok(NULL, delim);
 			char* body_part = strtok(ptr, "_");
-			printf("%s\n", body_part);
+			//printf("%s\n", body_part);
 			if(!strcmp(body_part, "ABE")){face_list = ABE_flist ;}
 			else if(!strcmp(body_part, "ABD")){face_list = ABD_flist ;}
 			else if(!strcmp(body_part, "BD")){face_list = BD_flist ;}
@@ -237,6 +235,7 @@ int parseOBJ(
 	}
 
 	map_faces(temp_list, face_list, vertex_list);
+	listClear(vertex_list);
 
 }
 

@@ -10,7 +10,7 @@
 
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 800
-List* FList;
+
 List* ABE_flist;
 List* ABD_flist;
 List* BD_flist;
@@ -40,8 +40,39 @@ void Timer(int extra);
 
 float max(float num1, float num2);
 
+struct Human{
+	List** parts;
+	int num_parts;
+};
+typedef struct Human Human;
+Human human;
+
 float max(float num1, float num2){
     return (num1 > num2 ) ? num1 : num2;
+}
+
+void setParts(Human* h){
+	h->parts = (List**)malloc(18 * sizeof(List*));
+	(h->parts)[0] = ABE_flist;
+	(h->parts)[1] = ABD_flist;
+	(h->parts)[2] = BD_flist;
+	(h->parts)[3] = BE_flist;
+	(h->parts)[4] = H_flist;
+	(h->parts)[5] = MD_flist;
+	(h->parts)[6] = ME_flist;
+	(h->parts)[7] = OE_flist;
+	(h->parts)[8] = OD_flist;
+	(h->parts)[9] = JE_flist;
+	(h->parts)[10] = JD_flist;
+	(h->parts)[11] = PD_flist;
+	(h->parts)[12] = PE_flist;
+	(h->parts)[13] = QD_flist;
+	(h->parts)[14] = QE_flist;
+	(h->parts)[15] = T_flist;
+	(h->parts)[16] = CE_flist;
+	(h->parts)[17] = CD_flist;
+	h->num_parts = 18;
+
 }
 
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp){
@@ -98,15 +129,19 @@ void display(){
 	/* começa desenhar */
 		glLineWidth((GLfloat) 10.0);
 		glBegin(GL_TRIANGLES);
-			Node* fc_vtx = listGetittem(FList, 0);
-			GLfloat color_arr[2];
-			for(int i=1;i<FList->size/3;i++){
-				//color_arr[0] = (i*0.5/(FList->size/3.0)), color_arr[1] = 0.85*(i/(FList->size));
-				for(int j=0;j<3;j++){
-					glColor3f(0.5*sin(i), 0.33*j, 0.5*cos(i));
-					glVertex3f((GLfloat) (*((float**)fc_vtx->points))[0], (GLfloat) (*((float**)fc_vtx->points))[1], (GLfloat) (*((float**)fc_vtx->points))[2]);
-					fc_vtx = fc_vtx->prox;
-					//fc_vtx ++;
+			printf("%d\n", human.num_parts);
+			for(int part=0; part<human.num_parts;part++){
+				List* fc_lst = (human.parts)[part];
+				Node* fc_vtx = listGetittem(fc_lst, 0);
+				//GLfloat color_arr[2];
+				for(int i=1;i<fc_lst->size/3;i++){
+					//color_arr[0] = (i*0.5/(FList->size/3.0)), color_arr[1] = 0.85*(i/(FList->size));
+					for(int j=0;j<3;j++){
+						glColor3f(0.5*sin(i), 0.33*j, 0.5*cos(i));
+						glVertex3f((GLfloat) (*((float**)fc_vtx->points))[0], (GLfloat) (*((float**)fc_vtx->points))[1], (GLfloat) (*((float**)fc_vtx->points))[2]);
+						fc_vtx = fc_vtx->prox;
+						//fc_vtx ++;
+					}
 				}
 			}
 		glEnd();
@@ -161,7 +196,6 @@ void Timer(int extra){
 
 
 int main(int argc, char** argv){
-	listInit(&FList);
 	listInit(&ABE_flist);
 	listInit(&ABD_flist);
 	listInit(&BD_flist);
@@ -202,13 +236,13 @@ int main(int argc, char** argv){
 	T_flist,
 	CE_flist,
 	CD_flist);
-
+	setParts(&human);
 	glutInit(&argc, argv);
 	glutTimerFunc(0,Timer,0);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowPosition(0,0);
 	glutInitWindowSize(DISPLAY_WIDTH,DISPLAY_HEIGHT);
-	glutCreateWindow("head test");
+	glutCreateWindow("Human");
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
