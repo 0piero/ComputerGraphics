@@ -6,12 +6,29 @@
 #include <errno.h>
 #include "List.h"
 #include "objfp.h"
+#include <unistd.h>
 
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 800
-
-List* VList;
 List* FList;
+List* ABE_flist;
+List* ABD_flist;
+List* BD_flist;
+List* BE_flist;
+List* H_flist;
+List* MD_flist;
+List* ME_flist;
+List* OE_flist;
+List* OD_flist;
+List* JE_flist;
+List* JD_flist;
+List* PD_flist;
+List* PE_flist;
+List* QD_flist;
+List* QE_flist;
+List* T_flist;
+List* CE_flist;
+List* CD_flist;
 
 double ang_x = 0.0, ang_y = 0.0, ang_z = 0.0;
 
@@ -89,7 +106,7 @@ void display(){
 					glColor3f(0.5*sin(i), 0.33*j, 0.5*cos(i));
 					glVertex3f((GLfloat) (*((float**)fc_vtx->points))[0], (GLfloat) (*((float**)fc_vtx->points))[1], (GLfloat) (*((float**)fc_vtx->points))[2]);
 					fc_vtx = fc_vtx->prox;
-
+					//fc_vtx ++;
 				}
 			}
 		glEnd();
@@ -144,11 +161,47 @@ void Timer(int extra){
 
 
 int main(int argc, char** argv){
-	listInit(&VList);
 	listInit(&FList);
+	listInit(&ABE_flist);
+	listInit(&ABD_flist);
+	listInit(&BD_flist);
+	listInit(&BE_flist);
+	listInit(&H_flist);
+	listInit(&MD_flist);
+	listInit(&ME_flist);
+	listInit(&OE_flist);
+	listInit(&OD_flist);
+	listInit(&JE_flist);
+	listInit(&JD_flist);
+	listInit(&PD_flist);
+	listInit(&PE_flist);
+	listInit(&QD_flist);
+	listInit(&QE_flist);
+	listInit(&T_flist);
+	listInit(&CE_flist);
+	listInit(&CD_flist);
+
 	FILE* OBJfp = (FILE*) malloc(sizeof(FILE));
 	read_args(argv, argc, &OBJfp);
-	parseOBJ(OBJfp, VList, FList);
+	parseOBJ(OBJfp,
+	ABE_flist,
+	ABD_flist,
+	BD_flist,
+	BE_flist,
+	H_flist,
+	MD_flist,
+	ME_flist,
+	OE_flist,
+	OD_flist,
+	JE_flist,
+	JD_flist,
+	PD_flist,
+	PE_flist,
+	QD_flist,
+	QE_flist,
+	T_flist,
+	CE_flist,
+	CD_flist);
 
 	glutInit(&argc, argv);
 	glutTimerFunc(0,Timer,0);
