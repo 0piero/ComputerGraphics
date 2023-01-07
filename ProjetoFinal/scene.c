@@ -6,6 +6,33 @@ double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
 //double angx = 0.0, angy = 90.0, angz = 0.0, deltaAng = 5.0;
 int x_janela = 600, y_janela = 600;
 
+GLfloat LuzAmbiente[4] = {0.5, 0.5, 0.5, 0.5};
+GLfloat LuzDifusa [4] = {0.4, 0.4, 0.4, 0.5};
+GLfloat LuzEspecular [4] = {1.0, 0.0, 1.0, 0.5};
+GLfloat PosicaoLuz [4] = {0.0, y_max, 0.0, 1.0};
+GLfloat objeto_ambiente[4] = {1.0,1.0,1.0,1.0};
+GLfloat objeto_difusa[4] = {1.0,1.0,1.0,1.0};
+GLfloat objeto_especular[4] = {0.0,0.5,0.0,1.0};
+
+void implement_Light(){
+    glLightfv(GL_LIGHT0, GL_AMBIENT, LuzAmbiente);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, LuzDifusa );
+    glLightfv(GL_LIGHT0, GL_SPECULAR, LuzEspecular );
+    glLightfv(GL_LIGHT0, GL_POSITION, PosicaoLuz );
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambiente);
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT,LuzAmbiente);
+
+    glPushMatrix();
+    glTranslatef(0.0,y_max,0.0);
+    glColor3f(0.0,1.0,0.0);
+    //glutSolidCube(0.1);
+    glPopMatrix();
+}
 
 
 void draw(){
@@ -14,6 +41,7 @@ void draw(){
     glEnable(GL_DEPTH_TEST);
     glColor3f(0.0, 0.0 ,0.0);
     glLoadIdentity();
+    implement_Light();
     glScalef(1.2,1.2,1.2);
     glRotatef(angx,1,0,0);
     glRotatef(angy,0,1,0);
@@ -79,8 +107,11 @@ int main(int argc, char *argv[] ){
     glutInitWindowSize(x_janela,y_janela);
     glutCreateWindow("Projeto Final - Computação Gráfica");
 
-    init ();
-    CarregaTextura("wood.bmp");
+    init(0);
+    CarregaTextura("wood.bmp",0);
+
+    //init(1);
+    //CarregaTextura("tunnelTexture.bmp",1);
 
     glutDisplayFunc(draw);
     glutKeyboardFunc(keyboard);
