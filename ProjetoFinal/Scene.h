@@ -1,6 +1,8 @@
 #ifndef Scene
 #define Scene
 #include "texture.h"
+#include "fractal.h"
+#include <math.h>
 double angle_x, angle_y, angle_z;
 #define x_max 0.6
 #define y_max 0.3
@@ -29,49 +31,49 @@ int wall_faces[5][4] = {
 void draw_Borders(){
     glColor3f(0.0,1.0,1.0);
     int i;
-    glBegin(GL_QUADS);
-        i = 0;
-        if(!((angle_y > 0) && (angle_y < 180))){//draw right border
-            glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
-        }
-        i = 1;
-        if(!((angle_y > 180) && (angle_y < 360) || (angle_y < 0))){//draw left border
-            glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
-        }
-        glColor3f(0.0,0.0,1.0);
-        i = 2;
-        if(!((angle_y > 90) && (angle_y < 270))){//draw back border
-            glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
-        }
-        i = 3;
-            glBindTexture ( GL_TEXTURE_2D,texture_id);//draw floor border
+    glPushMatrix();
+        glBegin(GL_QUADS);
+            i = 0;
+            if(!((angle_y > 0) && (angle_y < 180))){//draw right border
+                glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
+            }
+            i = 1;
+            if(!(((angle_y > 180) && (angle_y < 360)) || (angle_y < 0))){//draw left border
+                glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
+            }
+            glColor3f(0.0,0.0,1.0);
+            i = 2;
+            if(!((angle_y > 90) && (angle_y < 270))){//draw back border
+                glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
+            }
+            i = 3;
+                glBindTexture(GL_TEXTURE_2D,texture_id[0]);//draw floor border
 
-            glColor3f(1.0,1.0,1.0);
-            glTexCoord2f(0.0f, 0.0f);glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
-            glTexCoord2f(0.0f, 1.0f);glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
-            glTexCoord2f(1.0f, 1.0f);glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
-            glTexCoord2f(1.0f, 0.0f);glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
+                glColor3f(1.0,1.0,1.0);
+                glTexCoord2f(0.0f, 0.0f);glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
+                glTexCoord2f(0.0f, 1.0f);glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
+                glTexCoord2f(1.0f, 1.0f);glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
+                glTexCoord2f(1.0f, 0.0f);glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
 
-        i = 4;
-        glColor3f(0.0,0.0,1.0);
-        if(!((angle_y > 270) || (angle_y < 90))){//draw front border
-            glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
-            glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
-        }
-    glEnd();
-    /*glColor3f(0.0,1.0,0.0);
-    glutWireCube(0.4);*/
+            i = 4;
+            glColor3f(0.0,0.0,1.0);
+            if(!((angle_y > 270) || (angle_y < 90))){//draw front border
+                glVertex3f(wall_vertices[wall_faces[i][0]][0],wall_vertices[wall_faces[i][0]][1],wall_vertices[wall_faces[i][0]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][1]][0],wall_vertices[wall_faces[i][1]][1],wall_vertices[wall_faces[i][1]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][2]][0],wall_vertices[wall_faces[i][2]][1],wall_vertices[wall_faces[i][2]][2]);
+                glVertex3f(wall_vertices[wall_faces[i][3]][0],wall_vertices[wall_faces[i][3]][1],wall_vertices[wall_faces[i][3]][2]);
+            }
+        glEnd();
+    glPopMatrix();
 }
 
 void draw_Door(){
@@ -256,7 +258,7 @@ void draw_Ball(){
     glColor3f(0.2,0.5,0.6);
     glPushMatrix();
         glTranslatef(-x_max+0.2,-y_max+0.101,z_max-0.101);
-        glutSolidSphere(0.1,20,10);
+        glutSolidSphere(0.1,30,20);
     glPopMatrix();
 }
 
@@ -319,7 +321,7 @@ void draw_Shelf(){
 
 void draw_Painting(){
 
-    if(!((angle_y > 180) && (angle_y < 360) || (angle_y < 0))){//draw left border
+    if(!(((angle_y > 180) && (angle_y < 360)) || (angle_y < 0))){//condition for drawing left border
         double border_length = 0.2;
         glPushMatrix();//draw the right painting
             glColor3f(1.0,0.0,0.0);
@@ -332,7 +334,7 @@ void draw_Painting(){
                 glVertex3f(-x_max-border_length,-y_max-border_length,0.0);
                 glVertex3f(-x_max-border_length,+y_max+border_length,0.0);
             glEnd();
-            glPushMatrix();//draw the texture
+            glPushMatrix();//draw the back of the painting
                 glTranslatef(0.0,0.0,+0.001);
                 glColor3f(1.0,1.0,1.0);
                 glBegin(GL_QUADS);
@@ -343,7 +345,7 @@ void draw_Painting(){
                 glEnd();
             glPopMatrix();
 
-            glPushMatrix();//draw the support of the paintind
+            glPushMatrix();
 
             glPopMatrix();
 
@@ -375,8 +377,105 @@ void draw_Painting(){
     }
 }
 
-void draw_Speakers(){
+void draw_Fractals(){
+    if(!(((angle_y > 180) && (angle_y < 360)) || (angle_y < 0))){
+        float pontos[3][2] = {{-1.0,-0.8},{1.0,-0.8},{0.0,-0.8+2*sqrt(3)/2.0}};
+        glPushMatrix();
+            glTranslatef(-x_max+0.002,-0.005,z_max/2.0);
+            glRotatef(90.0,0.0,1.0,0.0);
+            glScalef(0.085,0.085,0.085);
+            glColor3f(0.0,0.0,1.0);
+            triangulos3(pontos,3);
+        glPopMatrix();
 
+        glPushMatrix();
+            glTranslatef(-x_max+0.002,-0.005,-z_max/2.0);
+            glRotatef(90.0,0.0,1.0,0.0);
+            glScalef(0.085,0.085,0.085);
+            glColor3f(0.0,0.0,1.0);
+            triangulos3(pontos,3);
+        glPopMatrix();
+    }
+}
+
+void draw_Stairs(){
+    glPushMatrix();
+        glColor3f(0.0,0.0,1.0);
+        glTranslatef(0.0,-y_max+0.0451,z_max-0.281);
+        glScalef(2.0, 0.9, 1.5);
+        glutSolidCube(0.1);
+    glPopMatrix();
+}
+
+void draw_Halters(){
+    glPushMatrix();
+        glPushMatrix();//draw first halter
+        glColor3f(1.0,1.0,0.0);
+            glTranslatef(0.0,+0.040,-z_max/1.07);
+            glPushMatrix();
+                glTranslatef(0.0,0.0,-0.0);
+                glutSolidSphere(0.03,20,10);//draw the first ball
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0,0.0,+0.1);
+                glutSolidSphere(0.03,20,10);//draw the second ball
+            glPopMatrix();
+            glPushMatrix();
+                glScalef(0.3,0.2,1.0);
+                glTranslatef(0.0,-0.025,+0.05);
+                glutSolidCube(0.1);//draw the middle
+            glPopMatrix();
+        glPopMatrix();
+
+        glPushMatrix();//draw second halter
+            glColor3f(1.0,1.0,0.0);
+            glTranslatef(0.2,+0.040,-z_max/1.07);
+            glPushMatrix();
+                glTranslatef(0.0,0.0,-0.0);
+                glutSolidSphere(0.03,20,10);//draw the first ball
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0,0.0,+0.1);
+                glutSolidSphere(0.03,20,10);//draw the second ball
+            glPopMatrix();
+            glPushMatrix();
+                glScalef(0.3,0.2,1.0);
+                glTranslatef(0.0,-0.025,+0.05);
+                glutSolidCube(0.1);//draw the middle
+            glPopMatrix();
+        glPopMatrix();
+    glPopMatrix();
+}
+
+void draw_Speakers(){
+    glPushMatrix();
+        glPushMatrix();
+            glTranslatef(-0.15,0.051,-z_max+0.051);
+            glRotatef(-90.0,0.0,1.0,0.0);
+            glPushMatrix();
+                glColor3f(0.0,0.0,1.0);
+                glScalef(0.5,0.5,0.5);
+                glTranslatef(0.10,0.0,0.0);
+                glutSolidSphere(0.05,30,10);
+            glPopMatrix();
+            glColor3f(0.0,0.0,0.0);
+            glutSolidCube(0.1);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(+0.35,0.051,-z_max+0.051);
+            glRotatef(-90.0,0.0,1.0,0.0);
+            glPushMatrix();
+                glColor3f(0.0,0.0,1.0);
+                glScalef(0.5,0.5,0.5);
+                glTranslatef(0.10,0.0,0.0);
+                glutSolidSphere(0.05,30,10);
+            glPopMatrix();
+            glColor3f(0.0,0.0,0.0);
+            glutSolidCube(0.1);
+        glPopMatrix();
+
+    glPopMatrix();
 }
 
 void draw_Objects(){
@@ -385,10 +484,14 @@ void draw_Objects(){
     draw_Stretcher();
     draw_Ball();
     draw_Shelf();
-    draw_Painting();
+    draw_Painting();//ver como faz p colocar mais de uma textura diferente
+    draw_Fractals();
+    draw_Stairs();
+    draw_Halters();
+    draw_Speakers();
 }
 
-draw_Scene(double alpha, double beta, double gama){
+void draw_Scene(double alpha, double beta, double gama){
     angle_x = alpha;
     angle_y = beta;
     angle_z = gama;
