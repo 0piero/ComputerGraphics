@@ -8,7 +8,7 @@ typedef struct BMPImagem
     char *data;
 }BMPImage;
 
-GLuint texture_id, texture_id2;
+GLuint texture_id[2];
 
 void getBitmapImageData( char *pFileName, BMPImage *pImage ){
     FILE *pFile = NULL;
@@ -68,16 +68,16 @@ void getBitmapImageData( char *pFileName, BMPImage *pImage ){
 
 
 /*Função para Carregar uma imagem .BMP */
-void CarregaTextura(char* Filename){
+void CarregaTextura(char* Filename, int current_texture){
 
     BMPImage textura;
 
-    glBindTexture(GL_TEXTURE_2D,texture_id);
+    glBindTexture(GL_TEXTURE_2D,texture_id[current_texture]);
 
     getBitmapImageData( Filename, &textura);
 
     // Define os parâmetros da textura
-    glBindTexture(GL_TEXTURE_2D,texture_id);
+    glBindTexture(GL_TEXTURE_2D,texture_id[current_texture]);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -96,11 +96,10 @@ void CarregaTextura(char* Filename){
 		Inicializa os par‚metros globais de OpenGL
 
  ********************************************************************** */
-void init(void) {
+void init(int textures) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);			/* Black Background */
 	glEnable(GL_DEPTH_TEST);
-         glGenTextures(1,&texture_id);
+         glGenTextures(1,&texture_id[textures]);
 
 }
-
 #endif
