@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+//#include <glu.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -6,31 +7,33 @@
 #include <errno.h>
 #include "List.h"
 #include "objfp.h"
+#include "human.h"
+#include "moves.h"
 #include <unistd.h>
 
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 800
 
-List* ABE_flist;
-List* ABD_flist;
-List* BD_flist;
-List* BE_flist;
-List* H_flist;
-List* MD_flist;
-List* ME_flist;
-List* OE_flist;
-List* OD_flist;
-List* JE_flist;
-List* JD_flist;
-List* PD_flist;
-List* PE_flist;
-List* QD_flist;
-List* QE_flist;
-List* T_flist;
-List* CE_flist;
-List* CD_flist;
 
-double ang_x = 0.0, ang_y = 0.0, ang_z = 0.0;
+float ang_xV1D = 0.0, ang_yV1D = 0.0, ang_zV1D = 0.0;
+float ang_xV2D = 0.0, ang_yV2D = 0.0, ang_zV2D = 0.0;
+float ang_xV1E = 0.0, ang_yV1E = 0.0, ang_zV1E = 0.0;
+float ang_xV2E = 0.0, ang_yV2E = 0.0, ang_zV2E = 0.0;
+float ang_xV3D = 0.0, ang_yV3D = 0.0, ang_zV3D = 0.0;
+float ang_xV3E = 0.0, ang_yV3E = 0.0, ang_zV3E = 0.0;
+
+float ang_xP1D = 0.0, ang_yP1D = 0.0, ang_zP1D = 0.0;
+float ang_xP2D = 0.0, ang_yP2D = 0.0, ang_zP2D = 0.0;
+float ang_xP1E = 0.0, ang_yP1E = 0.0, ang_zP1E = 0.0;
+float ang_xP2E = 0.0, ang_yP2E = 0.0, ang_zP2E = 0.0;
+float ang_xP3D = 0.0, ang_yP3D = 0.0, ang_zP3D = 0.0;
+float ang_xP3E = 0.0, ang_yP3E = 0.0, ang_zP3E = 0.0;
+
+float ang_xC = 0.0, ang_yC = 0.0, ang_zC = 0.0;
+/* ang_()V1D, ang_()V2D, ang_()V1E, ang_()V2E, ang_()V3D, ang_()V3E, ang_()P1D, ang_()P2D, ang_()P1E, ang_()P2E, ang_()P3D, ang_()P3E, ang_()C */
+float ang_x[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0}; 
+float ang_y[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
+float ang_z[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
 
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp);
 void display();
@@ -40,39 +43,8 @@ void Timer(int extra);
 
 float max(float num1, float num2);
 
-struct Human{
-	List** parts;
-	int num_parts;
-};
-typedef struct Human Human;
-Human human;
-
 float max(float num1, float num2){
     return (num1 > num2 ) ? num1 : num2;
-}
-
-void setParts(Human* h){
-	h->parts = (List**)malloc(18 * sizeof(List*));
-	(h->parts)[0] = ABE_flist;
-	(h->parts)[1] = ABD_flist;
-	(h->parts)[2] = BD_flist;
-	(h->parts)[3] = BE_flist;
-	(h->parts)[4] = H_flist;
-	(h->parts)[5] = MD_flist;
-	(h->parts)[6] = ME_flist;
-	(h->parts)[7] = OE_flist;
-	(h->parts)[8] = OD_flist;
-	(h->parts)[9] = JE_flist;
-	(h->parts)[10] = JD_flist;
-	(h->parts)[11] = PD_flist;
-	(h->parts)[12] = PE_flist;
-	(h->parts)[13] = QD_flist;
-	(h->parts)[14] = QE_flist;
-	(h->parts)[15] = T_flist;
-	(h->parts)[16] = CE_flist;
-	(h->parts)[17] = CD_flist;
-	h->num_parts = 18;
-
 }
 
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp){
@@ -94,6 +66,8 @@ void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 }
 
+
+
 void display(){
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -109,42 +83,29 @@ void display(){
 
 	glEnable(GL_DEPTH_TEST);
 
-	//GLfloat ambient_rgba[4] = {1.0, 0.0, 0.0, 1.0};
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_rgba);
-	//glEnable(GL_LIGHT0);
-
-	//glEnable(GL_COLOR_MATERIAL);
-	//glEnable(GL_LIGHTING);
-
-	//GLfloat ambient_rgba2[4] = {0.0, 0.0, 1.0, 1.0};
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_rgba2);
-
 	glPushMatrix();
-	glRotatef(ang_x,1.0,0.0,0.0);
-	glRotatef(ang_y,0.0,1.0,0.0);
-	glRotatef(ang_z,0.0,0.0,1.0);
+	//glRotatef(ang_x,1.0,0.0,0.0);
+	//glRotatef(ang_y,0.0,1.0,0.0);
+	//glRotatef(ang_z,0.0,0.0,1.0);
 	glScalef(0.1,0.1,0.1);
 
 
 	/* começa desenhar */
 		glLineWidth((GLfloat) 10.0);
-		glBegin(GL_TRIANGLES);
-			printf("%d\n", human.num_parts);
-			for(int part=0; part<human.num_parts;part++){
-				List* fc_lst = (human.parts)[part];
-				Node* fc_vtx = listGetittem(fc_lst, 0);
-				//GLfloat color_arr[2];
-				for(int i=1;i<fc_lst->size/3;i++){
-					//color_arr[0] = (i*0.5/(FList->size/3.0)), color_arr[1] = 0.85*(i/(FList->size));
-					for(int j=0;j<3;j++){
-						glColor3f(0.5*sin(i), 0.33*j, 0.5*cos(i));
-						glVertex3f((GLfloat) (*((float**)fc_vtx->points))[0], (GLfloat) (*((float**)fc_vtx->points))[1], (GLfloat) (*((float**)fc_vtx->points))[2]);
-						fc_vtx = fc_vtx->prox;
-						//fc_vtx ++;
-					}
-				}
-			}
-		glEnd();
+		rotV1D(ref_joints, &human, ang_x, ang_y, ang_z);
+		//glBegin(GL_TRIANGLES);
+		//	for(int part=0; part<human.num_parts;part++){
+		//		List* fc_lst = (human.parts)[part];
+		//		Node* fc_vtx = listGetittem(fc_lst, 0);
+		//		for(int i=1;i<fc_lst->size/3;i++){
+		//			for(int j=0;j<3;j++){
+		//				glColor3f(0.5*sin(i), 0.33*j, 0.5*cos(i));
+		//				glVertex3f((GLfloat) (*((float**)fc_vtx->points))[0], (GLfloat) (*((float**)fc_vtx->points))[1], (GLfloat) (*((float**)fc_vtx->points))[2]);
+		//				fc_vtx = fc_vtx->prox;
+		//			}
+		//		}
+		//	}
+		//glEnd();
 	/* termina */
 	glPopMatrix();
 	glutSwapBuffers();
@@ -155,23 +116,45 @@ void display(){
 void keyboard (unsigned char key, int x, int y){
 	switch(key){
 		case 'x':
-			ang_x += 5.0;
+			ang_x[0] += 5.0;
 			break;
 		case 'X':
-			ang_x -= 5.0;
+			ang_x[0] -= 5.0;
 			break;
 		case 'y':
-			ang_y += 5.0;
+			ang_y[0] += 5.0;
 			break;
 		case 'Y':
-			ang_y -= 5.0;
+			ang_y[0] -= 5.0;
 			break;
 		case 'z':
-			ang_z += 5.0;
+			ang_z[0] += 5.0;
 			break;
 		case 'Z':
-			ang_z -= 5.0;
+			ang_z[0] -= 5.0;
 			break;
+
+		case 'w':
+			ang_x[1] += 5.0;		
+			break;		
+		case 'W':		
+			ang_x[1] -= 5.0;		
+			break;
+
+		case 'a':
+			ang_y[1] += 5.0;		
+			break;		
+		case 'A':		
+			ang_y[1] -= 5.0;		
+			break;
+
+		case 's':
+			ang_z[1] += 5.0;		
+			break;		
+		case 'S':		
+			ang_z[1] -= 5.0;		
+			break;
+
 		default: break;
 	}
 }
