@@ -410,7 +410,7 @@ void draw_Stairs(){
 void draw_Halters(){
     glPushMatrix();
         glPushMatrix();//draw first halter
-        glColor3f(1.0,1.0,0.0);
+        glColor3f(1.0,0.0,1.0);
             glTranslatef(0.0,+0.040,-z_max/1.07);
             glPushMatrix();
                 glTranslatef(0.0,0.0,-0.0);
@@ -428,7 +428,7 @@ void draw_Halters(){
         glPopMatrix();
 
         glPushMatrix();//draw second halter
-            glColor3f(1.0,1.0,0.0);
+            glColor3f(1.0,0.0,1.0);
             glTranslatef(0.2,+0.040,-z_max/1.07);
             glPushMatrix();
                 glTranslatef(0.0,0.0,-0.0);
