@@ -23,14 +23,12 @@ float ang_xV1E = 0.0, ang_yV1E = 0.0, ang_zV1E = 0.0;
 float ang_xV2E = 0.0, ang_yV2E = 0.0, ang_zV2E = 0.0;
 float ang_xV3D = 0.0, ang_yV3D = 0.0, ang_zV3D = 0.0;
 float ang_xV3E = 0.0, ang_yV3E = 0.0, ang_zV3E = 0.0;
-
 float ang_xP1D = 0.0, ang_yP1D = 0.0, ang_zP1D = 0.0;
 float ang_xP2D = 0.0, ang_yP2D = 0.0, ang_zP2D = 0.0;
 float ang_xP1E = 0.0, ang_yP1E = 0.0, ang_zP1E = 0.0;
 float ang_xP2E = 0.0, ang_yP2E = 0.0, ang_zP2E = 0.0;
 float ang_xP3D = 0.0, ang_yP3D = 0.0, ang_zP3D = 0.0;
 float ang_xP3E = 0.0, ang_yP3E = 0.0, ang_zP3E = 0.0;
-
 float ang_xC = 0.0, ang_yC = 0.0, ang_zC = 0.0;
 */
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp);
@@ -60,7 +58,7 @@ void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-	GLfloat position[] = {0.0, 200.0, 100.0, 1.0};
+	GLfloat position[] = {50.0, 50.0, 50.0, 1.0};
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 }
 
@@ -71,55 +69,21 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);	
 	
-	GLfloat LA_rgba[] = {0.5,0.5,0.5,1.0};
-	GLfloat OA_rgba[] = {0.5,0.0,0.0,1.0};
-	GLfloat LD_rgba[] = {0.7,0.7,0.7,1.0};
-	GLfloat OD_rgba[] = {1.0,0.0,0.0,1.0};
-	GLfloat LE_rgba[] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat OE_rgba[] = {0.5, 0.5, 0.5, 1.0};
-	LightingStuff(LA_rgba, OA_rgba, LD_rgba, OD_rgba, LE_rgba, OE_rgba, 2);
+	GLfloat LA_rgba[] = {1.0,1.0,1.0,1.0};
+	GLfloat OA_rgba[] = {0.25,0.25,0.25,1.0};
+	GLfloat LD_rgba[] = {1.0,1.0,1.0,1.0};
+	GLfloat OD_rgba[] = {0.15,0.15,0.15,1.0};
+	GLfloat LE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
+	GLfloat OE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
+	LightingStuff(LA_rgba, OA_rgba, LD_rgba, OD_rgba, LE_rgba, OE_rgba,32);
 
 	glEnable(GL_DEPTH_TEST);
 
 	glPushMatrix();
-	//glRotatef(ang_x,1.0,0.0,0.0);
-	//glRotatef(ang_y,0.0,1.0,0.0);
-	//glRotatef(ang_z,0.0,0.0,1.0);
-		glScalef(0.15,0.15,0.15);
-
-
-	/* começa desenhar */
+		glScalef(0.1,0.1,0.1);
 		glLineWidth((GLfloat) 10.0);
-		if (torax==0){
-			glPushMatrix();
-				glTranslatef(ref_joints[13][0],ref_joints[13][1],ref_joints[13][2]);
-				glRotatef(ang_x[13], 1.0, 0.0, 0.0);
-				glRotatef(ang_y[13], 0.0, 1.0, 0.0);
-				glRotatef(ang_z[13], 0.0, 0.0, 1.0);
-				glTranslatef(-ref_joints[13][0],-ref_joints[13][1],-ref_joints[13][2]);
-				draw(human.parts[15]);
-				hndlVD();
-				hndlVE();
-				hndlH();
-			glPopMatrix();
-		}
-		else{hndlT();}
-		hndlPD();
-		hndlPE();
-		//glBegin(GL_TRIANGLES);
-		//	for(int part=0; part<human.num_parts;part++){
-		//		List* fc_lst = (human.parts)[part];
-		//		Node* fc_vtx = listGetittem(fc_lst, 0);
-		//		for(int i=1;i<fc_lst->size/3;i++){
-		//			for(int j=0;j<3;j++){
-		//				glColor3f(0.5*sin(i), 0.33*j, 0.5*cos(i));
-		//				glVertex3f((GLfloat) (*((float**)fc_vtx->points))[0], (GLfloat) (*((float**)fc_vtx->points))[1], (GLfloat) (*((float**)fc_vtx->points))[2]);
-		//				fc_vtx = fc_vtx->prox;
-		//			}
-		//		}
-		//	}
-		//glEnd();
-	/* termina */
+		hndlGlobal();
+
 	glPopMatrix();
 	glutSwapBuffers();
 }
@@ -197,59 +161,21 @@ void keyboard(unsigned char key, int x, int y){
 		switch(key){
 						case 'c':
 				ang_x[13] += 5.0;
-				//*(ang_x+0) += 5.0;
-				//*(ang_x+1) += 5.0;
-				//*(ang_x+4) += 5.0;
-				//*(ang_x+2) += 5.0;
-				//*(ang_x+3) += 5.0;
-				//*(ang_x+5) += 5.0;
 				break;
 			case 'C':
 				ang_x[13] -= 5.0;
-				//*(ang_x+0) -= 5.0;
-				//*(ang_x+1) -= 5.0;
-				//*(ang_x+4) -= 5.0;
-				//*(ang_x+2) -= 5.0;
-				//*(ang_x+3) -= 5.0;
-				//*(ang_x+5) -= 5.0;
-
 				break;
 			case 'v':
 				ang_y[13] += 5.0;
-				//*(ang_y+0) += 5.0;
-				//*(ang_y+1) += 5.0;
-				//*(ang_y+4) += 5.0;
-				//*(ang_y+2) += 5.0;
-				//*(ang_y+3) += 5.0;
-				//*(ang_y+5) += 5.0;				
-
 				break;
 			case 'V':
 				ang_y[13] -= 5.0;
-				//*(ang_y+0) -= 5.0;
-				//*(ang_y+1) -= 5.0;
-				//*(ang_y+4) -= 5.0;
-				//*(ang_y+2) -= 5.0;
-				//*(ang_y+3) -= 5.0;
-				//*(ang_y+5) -= 5.0;
 				break;
 			case 'b':
 				ang_z[13] += 5.0;
-				//*(ang_z+0) += 5.0;
-				//*(ang_z+1) += 5.0;
-				//*(ang_z+4) += 5.0;
-				//*(ang_z+2) += 5.0;
-				//*(ang_z+3) += 5.0;
-				//*(ang_z+5) += 5.0;
 				break;
 			case 'B':
 				ang_z[13] -= 5.0;
-				//*(ang_z+0) -= 5.0;
-				//*(ang_z+1) -= 5.0;
-				//*(ang_z+4) -= 5.0;
-				//*(ang_z+2) -= 5.0;
-				//*(ang_z+3) -= 5.0;
-				//*(ang_z+5) -= 5.0;
 				break;
 
 			default: break;
@@ -282,11 +208,13 @@ void keyboard(unsigned char key, int x, int y){
 			break;
 
 		case '4':
-			torax = 1;
-			//mov_mode = (float**) realloc()
-			//mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
-			//mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
-			//mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;					
+			torax = 1;						
+			break;
+		case '+':
+			ang_y[14] += 5.0;
+			break;
+		case '-':
+			ang_y[14] -= 5.0;			
 			break;
 
 		default: break;
@@ -339,9 +267,6 @@ void menu_movements(int option){
             break;
         case 4:
             torax = 1;
-			//mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
-			//mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;
-			//mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;
             break;
         default:
             break;
