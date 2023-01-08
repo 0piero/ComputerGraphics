@@ -2,8 +2,8 @@
 #include <GL/glut.h>
 #include "Scene.h"
 #include <stdio.h>
-double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
-//double angx = 0.0, angy = 90.0, angz = 0.0, deltaAng = 5.0;
+//double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
+double angx = 0.0, angy = 0.0, angz = 0.0, deltaAng = 5.0;
 int x_janela = 600, y_janela = 600;
 
 GLfloat LuzAmbiente[4] = {0.5, 0.5, 0.5, 1.0};
@@ -43,19 +43,31 @@ void implement_Light(){
     glPopMatrix();
 }
 
-
+double eye_x = -x_max+0.05, eye_y = -y_max, eye_z = 0.0;
+double center_x = 0.0, center_y = +y_max/2.0, center_z = 0.0;
+double up_x = 1.0, up_y = 1.0, up_z = 1.0;
+double win = 1.0;
 void draw(){
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glColor3f(0.0, 0.0 ,0.0);
-    glLoadIdentity();
     implement_Light();
-    glScalef(1.2,1.2,1.2);
-    glRotatef(angx,1,0,0);
-    glRotatef(angy,0,1,0);
-    glRotatef(angz,0,0,1);
-    draw_Scene(angx, angy, angz);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluLookAt(eye_x, eye_y, eye_z, center_x, center_y, center_z,up_x, up_y, up_z);
+    glOrtho(-win,win,-win,win,-win,win);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glPushMatrix();
+        glScalef(1.2,1.2,1.2);
+        glRotatef(angx,1,0,0);
+        glRotatef(angy,0,1,0);
+        glRotatef(angz,0,0,1);
+        draw_Scene(angx, angy, angz);
+    glPopMatrix();
     printf("ang x = %f, angy = %f e angz = %f\n", angx, angy, angz);
     glFlush();
 }
@@ -92,6 +104,12 @@ void keyboard(unsigned char key, int x, int y){
                 angz += deltaAng;
             }
             break;
+        case '+':
+            win = win * 0.95;
+            break;
+        case '-':
+            win = win * 1.05;
+            break;
         default:
             break;
     }
@@ -113,16 +131,19 @@ void menu_movements(int option){
     printf("%d\n",option);
     switch (option){
         case 0:
-            printf(" Cheguei aqui\n");
             angx += deltaAng;
             break;
         case 1:
-            printf(" Cheguei aqui\n");
             angy += deltaAng;
             break;
         case 2:
-            printf(" Cheguei aqui\n");
             angz += deltaAng;
+            break;
+        case 5:
+            win = win * 0.95;
+            break;
+        case 6:
+            win = win * 1.05;
             break;
         default:
             break;
@@ -151,6 +172,8 @@ int main(int argc, char *argv[] ){
     glutAddMenuEntry("Rotação em X",0);
     glutAddMenuEntry("Rotação em Y",1);
     glutAddMenuEntry("Rotação em Z",2);
+    glutAddMenuEntry("Zoom in",5);
+    glutAddMenuEntry("Zoom out",6);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 
