@@ -91,8 +91,17 @@ void display(){
 	/* começa desenhar */
 		glLineWidth((GLfloat) 10.0);
 		if (torax==0){
-			hndlVD();
-			hndlVE();
+			glPushMatrix();
+				glTranslatef(ref_joints[13][0],ref_joints[13][1],ref_joints[13][2]);
+				glRotatef(ang_x[13], 1.0, 0.0, 0.0);
+				glRotatef(ang_y[13], 0.0, 1.0, 0.0);
+				glRotatef(ang_z[13], 0.0, 0.0, 1.0);
+				glTranslatef(-ref_joints[13][0],-ref_joints[13][1],-ref_joints[13][2]);
+				draw(human.parts[15]);
+				hndlVD();
+				hndlVE();
+				hndlH();
+			glPopMatrix();
 		}
 		else{hndlT();}
 		hndlPD();
@@ -118,30 +127,8 @@ void display(){
 
 
 void keyboard(unsigned char key, int x, int y){
-	switch(key){
-		// V1D
-		/*
-		case 'x':
-			*(mov_mode[0]) += 5.0;
-			break;
-		case 'X':
-			*(mov_mode[0]) -= 5.0;
-			break;
-		case 'y':
-			*(mov_mode[1]) += 5.0;
-			break;
-		case 'Y':
-			*(mov_mode[1]) -= 5.0;
-			break;
-		case 'z':
-			*(mov_mode[2]) += 5.0;
-			break;
-		case 'Z':
-			*(mov_mode[2]) -= 5.0;
-			break;
-		*/
-		// V2D
-		if(torax==0){
+	if(torax==0){
+		switch(key){
 			case 'x':
 				*(mov_mode[0]) += 5.0;
 				break;
@@ -202,70 +189,78 @@ void keyboard(unsigned char key, int x, int y){
 			case 'R':		
 				*(mov_mode[8]) -= 5.0;		
 				break;
+
+			default: break;
 		}
-		else if (torax==1){
-			case 'c':
-				*(mov_mode[0]) += 5.0;
-				*(mov_mode[0]) += 5.0;
-				*(mov_mode[0]) += 5.0;
-				*(mov_mode[0]) += 5.0;
-				*(mov_mode[0]) += 5.0;
-				*(mov_mode[0]) += 5.0;
-				*(mov_mode[0]) += 5.0;
+	}
+	else if(torax==1){
+		switch(key){
+						case 'c':
+				ang_x[13] += 5.0;
+				//*(ang_x+0) += 5.0;
+				//*(ang_x+1) += 5.0;
+				//*(ang_x+4) += 5.0;
+				//*(ang_x+2) += 5.0;
+				//*(ang_x+3) += 5.0;
+				//*(ang_x+5) += 5.0;
 				break;
 			case 'C':
-				*(mov_mode[0]) -= 5.0;
-				*(mov_mode[0]) -= 5.0;
-				*(mov_mode[0]) -= 5.0;
-				*(mov_mode[0]) -= 5.0;
-				*(mov_mode[0]) -= 5.0;
-				*(mov_mode[0]) -= 5.0;
-				*(mov_mode[0]) -= 5.0;
+				ang_x[13] -= 5.0;
+				//*(ang_x+0) -= 5.0;
+				//*(ang_x+1) -= 5.0;
+				//*(ang_x+4) -= 5.0;
+				//*(ang_x+2) -= 5.0;
+				//*(ang_x+3) -= 5.0;
+				//*(ang_x+5) -= 5.0;
+
 				break;
 			case 'v':
-				*(mov_mode[1]) += 5.0;
-				*(mov_mode[1]) += 5.0;
-				*(mov_mode[1]) += 5.0;
-				*(mov_mode[1]) += 5.0;
-				*(mov_mode[1]) += 5.0;
-				*(mov_mode[1]) += 5.0;
-				*(mov_mode[1]) += 5.0;
+				ang_y[13] += 5.0;
+				//*(ang_y+0) += 5.0;
+				//*(ang_y+1) += 5.0;
+				//*(ang_y+4) += 5.0;
+				//*(ang_y+2) += 5.0;
+				//*(ang_y+3) += 5.0;
+				//*(ang_y+5) += 5.0;				
+
 				break;
 			case 'V':
-				*(mov_mode[1]) -= 5.0;
-				*(mov_mode[1]) -= 5.0;
-				*(mov_mode[1]) -= 5.0;
-				*(mov_mode[1]) -= 5.0;
-				*(mov_mode[1]) -= 5.0;
-				*(mov_mode[1]) -= 5.0;
-				*(mov_mode[1]) -= 5.0;
+				ang_y[13] -= 5.0;
+				//*(ang_y+0) -= 5.0;
+				//*(ang_y+1) -= 5.0;
+				//*(ang_y+4) -= 5.0;
+				//*(ang_y+2) -= 5.0;
+				//*(ang_y+3) -= 5.0;
+				//*(ang_y+5) -= 5.0;
 				break;
 			case 'b':
-				*(mov_mode[2]) += 5.0;
-				*(mov_mode[2]) += 5.0;
-				*(mov_mode[2]) += 5.0;
-				*(mov_mode[2]) += 5.0;
-				*(mov_mode[2]) += 5.0;
-				*(mov_mode[2]) += 5.0;
-				*(mov_mode[2]) += 5.0;
+				ang_z[13] += 5.0;
+				//*(ang_z+0) += 5.0;
+				//*(ang_z+1) += 5.0;
+				//*(ang_z+4) += 5.0;
+				//*(ang_z+2) += 5.0;
+				//*(ang_z+3) += 5.0;
+				//*(ang_z+5) += 5.0;
 				break;
 			case 'B':
-				*(mov_mode[2]) -= 5.0;
-				*(mov_mode[2]) -= 5.0;
-				*(mov_mode[2]) -= 5.0;
-				*(mov_mode[2]) -= 5.0;
-				*(mov_mode[2]) -= 5.0;
-				*(mov_mode[2]) -= 5.0;
-				*(mov_mode[2]) -= 5.0;
+				ang_z[13] -= 5.0;
+				//*(ang_z+0) -= 5.0;
+				//*(ang_z+1) -= 5.0;
+				//*(ang_z+4) -= 5.0;
+				//*(ang_z+2) -= 5.0;
+				//*(ang_z+3) -= 5.0;
+				//*(ang_z+5) -= 5.0;
 				break;
 
-
+			default: break;
 		}
+	}
+	switch(key){
 		case '0':
 			torax = 0;
-			mov_mode[0]=ang_x ; mov_mode[1]=ang_y ; mov_mode[2]=ang_z ;
-			mov_mode[3]=ang_x+1 ; mov_mode[4]=ang_y+1 ; mov_mode[5]=ang_z+1 ;
-			mov_mode[6]=ang_x+4 ; mov_mode[7]=ang_y+4 ; mov_mode[8]=ang_z+4 ; 
+			mov_mode[0]=ang_x ; mov_mode[1]=ang_y ; mov_mode[2]=ang_z ; // braco
+			mov_mode[3]=ang_x+1 ; mov_mode[4]=ang_y+1 ; mov_mode[5]=ang_z+1 ; // ante braco
+			mov_mode[6]=ang_x+4 ; mov_mode[7]=ang_y+4 ; mov_mode[8]=ang_z+4 ; // mao
 			break;
 		case '1':
 			torax = 0;
@@ -288,7 +283,7 @@ void keyboard(unsigned char key, int x, int y){
 
 		case '4':
 			torax = 1;
-			mov_mode = (float**) realloc()
+			//mov_mode = (float**) realloc()
 			//mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
 			//mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
 			//mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;					
