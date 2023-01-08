@@ -311,6 +311,43 @@ void Timer(int extra){
    glutTimerFunc(30,Timer,0);
 }
 
+void menu_movements(int option){
+    switch(option){
+        case 0:
+            torax = 0;
+			mov_mode[0]=ang_x ; mov_mode[1]=ang_y ; mov_mode[2]=ang_z ;
+			mov_mode[3]=ang_x+1 ; mov_mode[4]=ang_y+1 ; mov_mode[5]=ang_z+1 ;
+			mov_mode[6]=ang_x+4 ; mov_mode[7]=ang_y+4 ; mov_mode[8]=ang_z+4 ;
+            break;
+        case 1:
+            torax = 0;
+			mov_mode[0]=ang_x+2 ; mov_mode[1]=ang_y+2 ; mov_mode[2]=ang_z+2 ;
+			mov_mode[3]=ang_x+3 ; mov_mode[4]=ang_y+3 ; mov_mode[5]=ang_z+3 ;
+			mov_mode[6]=ang_x+5 ; mov_mode[7]=ang_y+5 ; mov_mode[8]=ang_z+5 ;
+            break;
+        case 2:
+            torax = 0;
+			mov_mode[0]=ang_x+6 ; mov_mode[1]=ang_y+6 ; mov_mode[2]=ang_z+6 ;
+			mov_mode[3]=ang_x+7 ; mov_mode[4]=ang_y+7 ; mov_mode[5]=ang_z+7 ;
+			mov_mode[6]=ang_x+10 ; mov_mode[7]=ang_y+10 ; mov_mode[8]=ang_z+10 ;
+            break;
+        case 3:
+            torax=0;
+			mov_mode[0]=ang_x+8; mov_mode[1]=ang_y+8; mov_mode[2]=ang_z+8;
+			mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;
+			mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;
+            break;
+        case 4:
+            torax = 1;
+			//mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
+			//mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;
+			//mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;
+            break;
+        default:
+            break;
+    }
+    glutPostRedisplay();
+}
 
 int main(int argc, char** argv){
 	listInit(&ABE_flist);
@@ -363,6 +400,17 @@ int main(int argc, char** argv){
 	glutCreateWindow("Human");
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
+	
+	int menu;
+
+	menu = glutCreateMenu(menu_movements);
+    	glutAddMenuEntry("Movimentar braço direito",1);
+    	glutAddMenuEntry("Movimentar braço esquerdo",0);
+    	glutAddMenuEntry("Movimentar perna direita",3);
+    	glutAddMenuEntry("Movimentar perna esquerda",2);
+    	glutAddMenuEntry("Movimentar torax",4);
+    	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 	return 0;
