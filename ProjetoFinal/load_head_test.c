@@ -15,6 +15,7 @@
 #define DISPLAY_HEIGHT 800
 
 float* mov_mode[9] = {ang_x, ang_y, ang_z, ang_x+1, ang_y+1, ang_z+1, ang_x+4, ang_y+4, ang_z+4};
+int torax = 0;
 /*
 float ang_xV1D = 0.0, ang_yV1D = 0.0, ang_zV1D = 0.0;
 float ang_xV2D = 0.0, ang_yV2D = 0.0, ang_zV2D = 0.0;
@@ -84,13 +85,16 @@ void display(){
 	//glRotatef(ang_x,1.0,0.0,0.0);
 	//glRotatef(ang_y,0.0,1.0,0.0);
 	//glRotatef(ang_z,0.0,0.0,1.0);
-	glScalef(0.15,0.15,0.15);
+		glScalef(0.15,0.15,0.15);
 
 
 	/* começa desenhar */
 		glLineWidth((GLfloat) 10.0);
-		hndlVD();
-		hndlVE();
+		if (torax==0){
+			hndlVD();
+			hndlVE();
+		}
+		else{hndlT();}
 		hndlPD();
 		hndlPE();
 		//glBegin(GL_TRIANGLES);
@@ -118,8 +122,6 @@ void keyboard(unsigned char key, int x, int y){
 		// V1D
 		case 'x':
 			*(mov_mode[0]) += 5.0;
-			//printf("%f %f %f\n", *(mov_mode[0]), *(mov_mode[1]), *(mov_mode[2]));
-			//printf("%f %f %f\n", ang_x[0], ang_y[0], ang_z[0]);
 			break;
 		case 'X':
 			*(mov_mode[0]) -= 5.0;
@@ -138,76 +140,82 @@ void keyboard(unsigned char key, int x, int y){
 			break;
 
 		// V2D
-		case 'w':
-			*(mov_mode[3]) += 5.0;		
-			break;		
-		case 'W':		
-			*(mov_mode[3]) -= 5.0;		
-			break;
-
-		case 'a':
-			*(mov_mode[4]) += 5.0;		
-			break;		
-		case 'A':		
-			*(mov_mode[4]) -= 5.0;		
-			break;
-
-		case 's':
-			*(mov_mode[5]) += 5.0;		
-			break;		
-		case 'S':		
-			*(mov_mode[5]) -= 5.0;		
-			break;
-
-		// V3D
-		case 'd':
-			*(mov_mode[6]) += 5.0;		
-			break;		
-		case 'D':		
-			*(mov_mode[6]) -= 5.0;		
-			break;
-
-		case 'e':
-			*(mov_mode[7]) += 5.0;		
-			break;		
-		case 'E':		
-			*(mov_mode[7]) -= 5.0;		
-			break;
-
-		case 'r':
-			*(mov_mode[8]) += 5.0;		
-			break;		
-		case 'R':		
-			*(mov_mode[8]) -= 5.0;		
-			break;
-
+		if(torax==0){
+			case 'w':
+				*(mov_mode[3]) += 5.0;		
+				break;		
+			case 'W':		
+				*(mov_mode[3]) -= 5.0;		
+				break;
+	
+			case 'a':
+				*(mov_mode[4]) += 5.0;		
+				break;		
+			case 'A':		
+				*(mov_mode[4]) -= 5.0;		
+				break;
+	
+			case 's':
+				*(mov_mode[5]) += 5.0;		
+				break;		
+			case 'S':		
+				*(mov_mode[5]) -= 5.0;		
+				break;
+	
+			// V3D
+			case 'd':
+				*(mov_mode[6]) += 5.0;		
+				break;		
+			case 'D':		
+				*(mov_mode[6]) -= 5.0;		
+				break;
+	
+			case 'e':
+				*(mov_mode[7]) += 5.0;		
+				break;		
+			case 'E':		
+				*(mov_mode[7]) -= 5.0;		
+				break;
+	
+			case 'r':
+				*(mov_mode[8]) += 5.0;		
+				break;		
+			case 'R':		
+				*(mov_mode[8]) -= 5.0;		
+				break;
+		}
 		case '0':
+			torax = 0;
 			mov_mode[0]=ang_x ; mov_mode[1]=ang_y ; mov_mode[2]=ang_z ;
 			mov_mode[3]=ang_x+1 ; mov_mode[4]=ang_y+1 ; mov_mode[5]=ang_z+1 ;
 			mov_mode[6]=ang_x+4 ; mov_mode[7]=ang_y+4 ; mov_mode[8]=ang_z+4 ; 
 			break;
 		case '1':
+			torax = 0;
 			mov_mode[0]=ang_x+2 ; mov_mode[1]=ang_y+2 ; mov_mode[2]=ang_z+2 ;
 			mov_mode[3]=ang_x+3 ; mov_mode[4]=ang_y+3 ; mov_mode[5]=ang_z+3 ;		
 			mov_mode[6]=ang_x+5 ; mov_mode[7]=ang_y+5 ; mov_mode[8]=ang_z+5 ;
 			break;
 		case '2':
+			torax = 0;
 			mov_mode[0]=ang_x+6 ; mov_mode[1]=ang_y+6 ; mov_mode[2]=ang_z+6 ;
 			mov_mode[3]=ang_x+7 ; mov_mode[4]=ang_y+7 ; mov_mode[5]=ang_z+7 ;		
 			mov_mode[6]=ang_x+10 ; mov_mode[7]=ang_y+10 ; mov_mode[8]=ang_z+10 ;
 			break;
 		case '3':
+			torax=0;
 			mov_mode[0]=ang_x+8; mov_mode[1]=ang_y+8; mov_mode[2]=ang_z+8;
 			mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
 			mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;			
 			break;
 
 		case '4':
-			mov_mode[0]=ang_x+8; mov_mode[1]=ang_y+8; mov_mode[2]=ang_z+8;
-			mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
-			mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;					
+			torax = 1;
+			mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
+			//mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
+			//mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;					
 			break;
-		
+
 		default: break;
 	}
 }
@@ -273,7 +281,6 @@ int main(int argc, char** argv){
 	CE_flist,
 	CD_flist);
 	setParts(&human);
-	//mov_mode = (float**) malloc(9 * sizeof(float*)); for(int i=0;i<9;i++){mov_mode[i]=(float*) malloc(3 * sizeof(float));}
 	glutInit(&argc, argv);
 	glutTimerFunc(0,Timer,0);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

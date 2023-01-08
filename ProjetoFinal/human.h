@@ -31,7 +31,8 @@ float P2E_ref[] = {-0.519119, -6.688396, 0.000000};
 float P3D_ref[] = {0.521860, -9.103373, 0.000000};
 float P3E_ref[] = {-0.518786, -9.103373, 0.000000};
 float C_ref[] = {0.019854, -0.867079, -0.076779};
-float* ref_joints[] = {V1E_ref, V1D_ref,V2E_ref,V2D_ref,V3E_ref,V3D_ref,P1E_ref,P1D_ref,P2E_ref,P2D_ref,P3E_ref,P3D_ref,C_ref};
+float T_ref[] = {-0.000086, -4.078445, -0.073221};
+float* ref_joints[] = {V1E_ref, V1D_ref,V2E_ref,V2D_ref,V3E_ref,V3D_ref,P1E_ref,P1D_ref,P2E_ref,P2D_ref,P3E_ref,P3D_ref,C_ref, T_ref};
 
 struct Human{
 	List** parts;
