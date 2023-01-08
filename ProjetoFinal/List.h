@@ -12,10 +12,10 @@ struct Node{
    //float thick;
 };
 struct List{
-   Node* hdy;
    int size;
+   Node* hdy;
 };
-Node* test = NULL;
+
 Node* crtNode(void** points, int figtype, float color[3], float thick);
 void listInit(List** list);
 void listInsert(List* list, Node* nod, int pos);
@@ -108,7 +108,8 @@ void listR(List* list, int pos){
 void listClear(List* list){
    if(list->hdy != NULL){
       Node* ptr, *ptr2;
-      ptr = ptr2 = list->hdy->prox;
+      ptr = list->hdy->prox;
+      ptr2 = ptr;
       list->hdy = NULL;
       while((ptr = ptr2) != NULL){
          ptr2 = ptr2->prox;

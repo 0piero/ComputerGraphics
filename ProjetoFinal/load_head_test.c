@@ -14,7 +14,8 @@
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 800
 
-
+float* mov_mode[9] = {ang_x, ang_y, ang_z, ang_x+1, ang_y+1, ang_z+1, ang_x+4, ang_y+4, ang_z+4};
+/*
 float ang_xV1D = 0.0, ang_yV1D = 0.0, ang_zV1D = 0.0;
 float ang_xV2D = 0.0, ang_yV2D = 0.0, ang_zV2D = 0.0;
 float ang_xV1E = 0.0, ang_yV1E = 0.0, ang_zV1E = 0.0;
@@ -30,11 +31,7 @@ float ang_xP3D = 0.0, ang_yP3D = 0.0, ang_zP3D = 0.0;
 float ang_xP3E = 0.0, ang_yP3E = 0.0, ang_zP3E = 0.0;
 
 float ang_xC = 0.0, ang_yC = 0.0, ang_zC = 0.0;
-/* ang_()V1D, ang_()V2D, ang_()V1E, ang_()V2E, ang_()V3D, ang_()V3E, ang_()P1D, ang_()P2D, ang_()P1E, ang_()P2E, ang_()P3D, ang_()P3E, ang_()C */
-float ang_x[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0}; 
-float ang_y[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
-float ang_z[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
-
+*/
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp);
 void display();
 void keyboard (unsigned char key, int x, int y);
@@ -87,12 +84,15 @@ void display(){
 	//glRotatef(ang_x,1.0,0.0,0.0);
 	//glRotatef(ang_y,0.0,1.0,0.0);
 	//glRotatef(ang_z,0.0,0.0,1.0);
-	glScalef(0.1,0.1,0.1);
+	glScalef(0.15,0.15,0.15);
 
 
 	/* começa desenhar */
 		glLineWidth((GLfloat) 10.0);
-		rotV1D(ref_joints, &human, ang_x, ang_y, ang_z);
+		hndlVD();
+		hndlVE();
+		hndlPD();
+		hndlPE();
 		//glBegin(GL_TRIANGLES);
 		//	for(int part=0; part<human.num_parts;part++){
 		//		List* fc_lst = (human.parts)[part];
@@ -113,48 +113,101 @@ void display(){
 
 
 
-void keyboard (unsigned char key, int x, int y){
+void keyboard(unsigned char key, int x, int y){
 	switch(key){
+		// V1D
 		case 'x':
-			ang_x[0] += 5.0;
+			*(mov_mode[0]) += 5.0;
+			//printf("%f %f %f\n", *(mov_mode[0]), *(mov_mode[1]), *(mov_mode[2]));
+			//printf("%f %f %f\n", ang_x[0], ang_y[0], ang_z[0]);
 			break;
 		case 'X':
-			ang_x[0] -= 5.0;
+			*(mov_mode[0]) -= 5.0;
 			break;
 		case 'y':
-			ang_y[0] += 5.0;
+			*(mov_mode[1]) += 5.0;
 			break;
 		case 'Y':
-			ang_y[0] -= 5.0;
+			*(mov_mode[1]) -= 5.0;
 			break;
 		case 'z':
-			ang_z[0] += 5.0;
+			*(mov_mode[2]) += 5.0;
 			break;
 		case 'Z':
-			ang_z[0] -= 5.0;
+			*(mov_mode[2]) -= 5.0;
 			break;
 
+		// V2D
 		case 'w':
-			ang_x[1] += 5.0;		
+			*(mov_mode[3]) += 5.0;		
 			break;		
 		case 'W':		
-			ang_x[1] -= 5.0;		
+			*(mov_mode[3]) -= 5.0;		
 			break;
 
 		case 'a':
-			ang_y[1] += 5.0;		
+			*(mov_mode[4]) += 5.0;		
 			break;		
 		case 'A':		
-			ang_y[1] -= 5.0;		
+			*(mov_mode[4]) -= 5.0;		
 			break;
 
 		case 's':
-			ang_z[1] += 5.0;		
+			*(mov_mode[5]) += 5.0;		
 			break;		
 		case 'S':		
-			ang_z[1] -= 5.0;		
+			*(mov_mode[5]) -= 5.0;		
 			break;
 
+		// V3D
+		case 'd':
+			*(mov_mode[6]) += 5.0;		
+			break;		
+		case 'D':		
+			*(mov_mode[6]) -= 5.0;		
+			break;
+
+		case 'e':
+			*(mov_mode[7]) += 5.0;		
+			break;		
+		case 'E':		
+			*(mov_mode[7]) -= 5.0;		
+			break;
+
+		case 'r':
+			*(mov_mode[8]) += 5.0;		
+			break;		
+		case 'R':		
+			*(mov_mode[8]) -= 5.0;		
+			break;
+
+		case '0':
+			mov_mode[0]=ang_x ; mov_mode[1]=ang_y ; mov_mode[2]=ang_z ;
+			mov_mode[3]=ang_x+1 ; mov_mode[4]=ang_y+1 ; mov_mode[5]=ang_z+1 ;
+			mov_mode[6]=ang_x+4 ; mov_mode[7]=ang_y+4 ; mov_mode[8]=ang_z+4 ; 
+			break;
+		case '1':
+			mov_mode[0]=ang_x+2 ; mov_mode[1]=ang_y+2 ; mov_mode[2]=ang_z+2 ;
+			mov_mode[3]=ang_x+3 ; mov_mode[4]=ang_y+3 ; mov_mode[5]=ang_z+3 ;		
+			mov_mode[6]=ang_x+5 ; mov_mode[7]=ang_y+5 ; mov_mode[8]=ang_z+5 ;
+			break;
+		case '2':
+			mov_mode[0]=ang_x+6 ; mov_mode[1]=ang_y+6 ; mov_mode[2]=ang_z+6 ;
+			mov_mode[3]=ang_x+7 ; mov_mode[4]=ang_y+7 ; mov_mode[5]=ang_z+7 ;		
+			mov_mode[6]=ang_x+10 ; mov_mode[7]=ang_y+10 ; mov_mode[8]=ang_z+10 ;
+			break;
+		case '3':
+			mov_mode[0]=ang_x+8; mov_mode[1]=ang_y+8; mov_mode[2]=ang_z+8;
+			mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
+			mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;			
+			break;
+
+		case '4':
+			mov_mode[0]=ang_x+8; mov_mode[1]=ang_y+8; mov_mode[2]=ang_z+8;
+			mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
+			mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;					
+			break;
+		
 		default: break;
 	}
 }
@@ -167,7 +220,7 @@ void reshape(int w, int h){
     
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluOrtho2D(0.0,1.0,0.0,1.0) ;
+	gluOrtho2D(50.0,50.0,50.0,50.0) ;
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -220,6 +273,7 @@ int main(int argc, char** argv){
 	CE_flist,
 	CD_flist);
 	setParts(&human);
+	//mov_mode = (float**) malloc(9 * sizeof(float*)); for(int i=0;i<9;i++){mov_mode[i]=(float*) malloc(3 * sizeof(float));}
 	glutInit(&argc, argv);
 	glutTimerFunc(0,Timer,0);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
