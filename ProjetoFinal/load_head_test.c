@@ -120,6 +120,7 @@ void display(){
 void keyboard(unsigned char key, int x, int y){
 	switch(key){
 		// V1D
+		/*
 		case 'x':
 			*(mov_mode[0]) += 5.0;
 			break;
@@ -138,9 +139,28 @@ void keyboard(unsigned char key, int x, int y){
 		case 'Z':
 			*(mov_mode[2]) -= 5.0;
 			break;
-
+		*/
 		// V2D
 		if(torax==0){
+			case 'x':
+				*(mov_mode[0]) += 5.0;
+				break;
+			case 'X':
+				*(mov_mode[0]) -= 5.0;
+				break;
+			case 'y':
+				*(mov_mode[1]) += 5.0;
+				break;
+			case 'Y':
+				*(mov_mode[1]) -= 5.0;
+				break;
+			case 'z':
+				*(mov_mode[2]) += 5.0;
+				break;
+			case 'Z':
+				*(mov_mode[2]) -= 5.0;
+				break;			
+
 			case 'w':
 				*(mov_mode[3]) += 5.0;		
 				break;		
@@ -162,7 +182,6 @@ void keyboard(unsigned char key, int x, int y){
 				*(mov_mode[5]) -= 5.0;		
 				break;
 	
-			// V3D
 			case 'd':
 				*(mov_mode[6]) += 5.0;		
 				break;		
@@ -183,6 +202,64 @@ void keyboard(unsigned char key, int x, int y){
 			case 'R':		
 				*(mov_mode[8]) -= 5.0;		
 				break;
+		}
+		else if (torax==1){
+			case 'c':
+				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += 5.0;
+				break;
+			case 'C':
+				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= 5.0;
+				break;
+			case 'v':
+				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += 5.0;
+				break;
+			case 'V':
+				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= 5.0;
+				break;
+			case 'b':
+				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += 5.0;
+				break;
+			case 'B':
+				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= 5.0;
+				break;
+
+
 		}
 		case '0':
 			torax = 0;
@@ -211,7 +288,8 @@ void keyboard(unsigned char key, int x, int y){
 
 		case '4':
 			torax = 1;
-			mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
+			mov_mode = (float**) realloc()
+			//mov_mode[0]=ang_x+13; mov_mode[1]=ang_y+13; mov_mode[2]=ang_z+13;
 			//mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
 			//mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;					
 			break;
@@ -260,6 +338,7 @@ int main(int argc, char** argv){
 	listInit(&CD_flist);
 
 	FILE* OBJfp = (FILE*) malloc(sizeof(FILE));
+	//char* str[2] = {"aa", "head.obj"};
 	read_args(argv, argc, &OBJfp);
 	parseOBJ(OBJfp,
 	ABE_flist,
