@@ -6,25 +6,34 @@ double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
 //double angx = 0.0, angy = 90.0, angz = 0.0, deltaAng = 5.0;
 int x_janela = 600, y_janela = 600;
 
-GLfloat LuzAmbiente[4] = {0.5, 0.5, 0.5, 0.5};
-GLfloat LuzDifusa [4] = {0.4, 0.4, 0.4, 0.5};
-GLfloat LuzEspecular [4] = {1.0, 0.0, 1.0, 0.5};
-GLfloat PosicaoLuz [4] = {0.0, y_max, 0.0, 1.0};
-GLfloat objeto_ambiente[4] = {1.0,1.0,1.0,1.0};
-GLfloat objeto_difusa[4] = {1.0,1.0,1.0,1.0};
-GLfloat objeto_especular[4] = {0.0,0.5,0.0,1.0};
+GLfloat LuzAmbiente[4] = {0.5, 0.5, 0.5, 1.0};
+GLfloat LuzDifusa [4] = {0.7, 0.7, 0.7, 1.0};
+GLfloat LuzEspecular [4] = {1.0, 1.0, 1.0, 1.0};
+GLfloat PosicaoLuz0 [4] = {+x_max/2.0, y_max, 0.0, 1.0};
+GLfloat PosicaoLuz1 [4] = {-x_max/2.0, y_max, 0.0, 1.0};
+GLfloat objeto_ambiente[4] = {0.5,0.0,0.0,1.0};
+GLfloat objeto_difusa[4] = {1.0,0.0,0.0,1.0};
+GLfloat objeto_especular[4] = {0.0,0.0,0.0,1.0};
+GLint especMaterial = 30;
 
 void implement_Light(){
     glLightfv(GL_LIGHT0, GL_AMBIENT, LuzAmbiente);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, LuzDifusa );
     glLightfv(GL_LIGHT0, GL_SPECULAR, LuzEspecular );
-    glLightfv(GL_LIGHT0, GL_POSITION, PosicaoLuz );
+    glLightfv(GL_LIGHT0, GL_POSITION, PosicaoLuz0 );
+    glLightfv(GL_LIGHT1, GL_AMBIENT, LuzAmbiente);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, LuzDifusa );
+    glLightfv(GL_LIGHT1, GL_SPECULAR, LuzEspecular );
+    glLightfv(GL_LIGHT1, GL_POSITION, PosicaoLuz1 );
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambiente);
     glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv (GL_FRONT, GL_SPECULAR, objeto_especular);
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_DEPTH_TEST);
+    glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,LuzAmbiente);
 
     glPushMatrix();
@@ -100,6 +109,27 @@ void reshape(int w, int h){
     glLoadIdentity();
 }
 
+void menu_movements(int option){
+    printf("%d\n",option);
+    switch (option){
+        case 0:
+            printf(" Cheguei aqui\n");
+            angx += deltaAng;
+            break;
+        case 1:
+            printf(" Cheguei aqui\n");
+            angy += deltaAng;
+            break;
+        case 2:
+            printf(" Cheguei aqui\n");
+            angz += deltaAng;
+            break;
+        default:
+            break;
+    }
+    glutPostRedisplay();
+}
+
 int main(int argc, char *argv[] ){
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_SINGLE| GLUT_RGB | GLUT_DEPTH);
@@ -114,6 +144,16 @@ int main(int argc, char *argv[] ){
     //CarregaTextura("tunnelTexture.bmp",1);
 
     glutDisplayFunc(draw);
+
+    int menu;
+
+    menu = glutCreateMenu(menu_movements);
+    glutAddMenuEntry("Rotação em X",0);
+    glutAddMenuEntry("Rotação em Y",1);
+    glutAddMenuEntry("Rotação em Z",2);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+
     glutKeyboardFunc(keyboard);
     glutReshapeFunc(reshape);
     glutMainLoop (); // Mostra tudo e espera
