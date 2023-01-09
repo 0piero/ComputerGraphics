@@ -13,9 +13,10 @@ ang_(13)T, ang_(14)Global */
 float ang_x[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0}; 
 float ang_y[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
 float ang_z[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
-float h_shift = 0.0;
+/* shift_x, shift_y, shift_z */
+float h_shift[3] = {0.0,0.0,0.0};
 
-double delta_ang = 1.0;
+double delta_ang = 5.0;
 float walk_ang_x[6]; /* angulo final de cada junta (E: [0,1,2], D: [3,4,5]) */
 float walk_start_ang_x[6]; /* angulo inicial de cada junta (E: [0,1,2], D: [3,4,5]) */
 float walk_shift; /* posicao final de deslocamento */
@@ -24,7 +25,8 @@ int walk_state = 0; /* */
 int walk_turn = 0; /* 0: perna (esquerda forwardMotion, direita backwardMotion), 1: perna (direita forwardMotion, esquerda backwardMotion) */
 int firstLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna walk_turn */ 
 int auxLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna !walk_turn */
-
+void backwardMotion();
+void forwardMotion();
 void rotV1D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 	glPushMatrix();
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
@@ -142,6 +144,7 @@ void hndlGlobal(){
 	float* ref[] = {ref_joints[13]};
 	float angx[] = {ang_x[14]}; float angy[] = {ang_y[14]}; float angz[] = {ang_z[14]};
 	glPushMatrix();
+		glTranslatef((GLfloat) h_shift[0], (GLfloat) h_shift[1], (GLfloat) h_shift[2]); // translada o corpo inteiro
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
 		glRotatef(angx[0], 1.0, 0.0, 0.0);
 		glRotatef(angy[0], 0.0, 1.0, 0.0);
@@ -152,6 +155,15 @@ void hndlGlobal(){
 		hndlPE();
 	glPopMatrix();
 }
+//void trnslBody(){
+//
+//	glPushMatrix();
+//		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
+//		glTranslatef(-ref[0][0],-ref[0][1],-ref[0][2]);
+//
+//	glPopMatrix();
+//}
+
  // x: P1+, X: P1-, w: P2+, W: P2-, d: P3+, D: P3-
 void choseLegs(){
 	int sign_esq, sign_dir;

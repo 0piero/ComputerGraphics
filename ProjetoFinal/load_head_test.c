@@ -13,7 +13,7 @@
 
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 800
-
+#define PI 3.1415926535897932
 float* mov_mode[9] = {ang_x, ang_y, ang_z, ang_x+1, ang_y+1, ang_z+1, ang_x+4, ang_y+4, ang_z+4};
 int torax = 0;
 
@@ -195,16 +195,32 @@ void keyboard(unsigned char key, int x, int y){
 			torax = 1;						
 			break;
 		case '+':
-			ang_y[14] += delta_ang;
+			ang_y[14] = (ang_y[14] + delta_ang);
+			if(ang_y[14]>360.0){ang_y[14] = ang_y[14] - 360.0;}
 			break;
 		case '-':
-			ang_y[14] -= delta_ang;			
+			ang_y[14] = ang_y[14] - delta_ang;
+			if(ang_y[14]<-360.0){ang_y[14] = ang_y[14] + 360.0;}
 			break;
 
 		case '.':
-			printf("Walking key\n");		
-			to_walk=1; choseLegs();
-			walk_shift = h_shift + 5.0;			
+			if(to_walk==0){
+				printf("Walking key\n");
+				float pi_180 = PI/180.0;
+				float rad_deg = pi_180 * ang_y[14]; 		
+				to_walk=1; choseLegs();
+				float sign_x, sign_y;
+				if ((0<rad_deg && rad_deg <= PI/2.0) || (-2.0*PI<rad_deg && rad_deg <= -(3.0/2.0)*(PI)))
+					{sign_x = -1.0; sign_y = -1.0; }
+				else if((PI/2.0<rad_deg && rad_deg<= PI) || (-(3.0/2.0)*(PI)<rad_deg && rad_deg <= -PI))
+					{sign_x = -1.0; sign_y = 1.0; rad_deg = PI - rad_deg; }
+				else if((PI<rad_deg && rad_deg<= (3.0/2.0)*(PI)) || (-PI<rad_deg && rad_deg<= -(PI/2.0)))
+					{sign_x = 1.0; sign_y = 1.0; rad_deg = (3.0/2.0)*(PI) - rad_deg; }
+				else if(((3.0/2.0)*(PI)<rad_deg && rad_deg<= 2.0*(PI)) || (-(PI/2.0)<rad_deg && rad_deg<= 0.0))
+					{sign_x = 1.0; sign_y = -1.0; rad_deg = 2*PI - rad_deg;}
+
+				h_shift[0] += 0.5*sin(rad_deg)*sign_x; h_shift[2] += 0.5*cos(rad_deg)*sign_y;
+			}
 
 		default: break;
 	}
