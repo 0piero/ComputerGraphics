@@ -68,7 +68,6 @@ void draw(){
         glRotatef(angz,0,0,1);
         draw_Scene(angx, angy, angz);
     glPopMatrix();
-    printf("ang x = %f, angy = %f e angz = %f\n", angx, angy, angz);
     glFlush();
 }
 
@@ -130,7 +129,6 @@ void reshape(int w, int h){
 }
 
 void menu_movements(int option){
-    printf("%d\n",option);
     switch (option){
         case 0:
             angx += deltaAng;
@@ -163,8 +161,8 @@ int main(int argc, char *argv[] ){
     glutInitWindowSize(x_janela,y_janela);
     glutCreateWindow("Projeto Final - Computação Gráfica");
 
-    init(0);
-    CarregaTextura("wood.bmp",0);
+    init_texture(0);
+    chargeTextura("wood.bmp",0);
 
     //init(1);
     //CarregaTextura("tunnelTexture.bmp",1);
