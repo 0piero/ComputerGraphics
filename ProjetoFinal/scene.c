@@ -1,9 +1,9 @@
-#include <windows.h>
+//#include <windows.h>
 #include <GL/glut.h>
 #include "Scene.h"
 #include <stdio.h>
-//double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
-double angx = 0.0, angy = 0.0, angz = 0.0, deltaAng = 5.0;
+double angx = -20.0, angy = -30.0, angz = 0.0, deltaAng = 5.0;
+//double angx = 0.0, angy = 0.0, angz = 0.0, deltaAng = 5.0;
 int x_janela = 600, y_janela = 600;
 
 GLfloat LuzAmbiente[4] = {0.5, 0.5, 0.5, 1.0};
@@ -43,9 +43,9 @@ void implement_Light(){
     glPopMatrix();
 }
 
-double eye_x = -x_max+0.05, eye_y = -y_max, eye_z = 0.0;
-double center_x = 0.0, center_y = +y_max/2.0, center_z = 0.0;
-double up_x = 1.0, up_y = 1.0, up_z = 1.0;
+double eye_x = 0.0, eye_y = 0.0, eye_z = 0.0;
+double center_x = 0.0, center_y = 0.0, center_z = z_max;
+double up_x = 0.0, up_y = 1.0, up_z = 0.0;
 double win = 1.0;
 void draw(){
     glClearColor(1,1,1,1);
@@ -74,6 +74,8 @@ void draw(){
 
 void keyboard(unsigned char key, int x, int y){
     switch(key){
+        case 27:
+            exit(1);
         case 'x':
             if(angx > 0 ){
                 angx -= deltaAng;
@@ -145,6 +147,9 @@ void menu_movements(int option){
         case 6:
             win = win * 1.05;
             break;
+        case 27:
+            exit(1);
+            break;
         default:
             break;
     }
@@ -166,14 +171,13 @@ int main(int argc, char *argv[] ){
 
     glutDisplayFunc(draw);
 
-    int menu;
-
-    menu = glutCreateMenu(menu_movements);
+    int menu = glutCreateMenu(menu_movements);
     glutAddMenuEntry("Rotação em X",0);
     glutAddMenuEntry("Rotação em Y",1);
     glutAddMenuEntry("Rotação em Z",2);
     glutAddMenuEntry("Zoom in",5);
     glutAddMenuEntry("Zoom out",6);
+    glutAddMenuEntry("Sair",27);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 
