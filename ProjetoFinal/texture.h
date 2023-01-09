@@ -10,7 +10,7 @@ typedef struct BMPImagem
 
 GLuint texture_id[2];
 
-void getBitmapImageData( char *fileName, BMP *Image ){
+void getBitmapImageData(char *fileName, BMP *Image){
     FILE *image = NULL;
     unsigned short numPlanes;
     unsigned short numBPR;
@@ -67,21 +67,21 @@ void getBitmapImageData( char *fileName, BMP *Image ){
 
 
 /*Função para Carregar uma imagem .BMP */
-void chargeTextura(char* Filename, int current_texture){
+void chargeTextura(char* fileName, int current_texture){
 
     BMP c_texture;
 
     glBindTexture(GL_TEXTURE_2D,texture_id[current_texture]);
 
-    getBitmapImageData( Filename, &c_texture);
+    getBitmapImageData( fileName, &c_texture);
 
     // Define os parâmetros da textura
     glBindTexture(GL_TEXTURE_2D,texture_id[current_texture]);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     // Give the image to OpenGL
     // Define uma textura bidimensional
@@ -90,10 +90,6 @@ void chargeTextura(char* Filename, int current_texture){
 }
 
 
-/* **********************************************************************
-  void init(void)
-		Inicializa os par‚metros globais de OpenGL
- ********************************************************************** */
 void init_texture(int textures) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);			/* Black Background */
 	glEnable(GL_DEPTH_TEST);
