@@ -7,6 +7,7 @@
 #include <errno.h>
 #include "List.h"
 #include "objfp.h"
+#include "Scene.h"
 #include "human.h"
 #include "moves.h"
 #include <unistd.h>
@@ -23,11 +24,13 @@ void keyboard (unsigned char key, int x, int y);
 void reshape(int w, int h);
 void Timer(int extra);
 
-float max(float num1, float num2);
-
-float max(float num1, float num2){
-    return (num1 > num2 ) ? num1 : num2;
-}
+double eye_x = 0.0, eye_y = 0.0, eye_z = 0.0;
+double center_x = 0.0, center_y = 0.0, center_z = 1.0;
+double up_x = 0.0, up_y = 1.0, up_z = 0.0;
+double win = 3.0;
+float ang_x_cena, ang_y_cena, ang_z_cena;
+int mode_cam_params = 0;
+int mode_rot_cena = 0;
 
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp){
 	glLightfv(GL_LIGHT0, GL_AMBIENT, LA_rgba);
@@ -52,9 +55,8 @@ void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat
 
 void display(){
 	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClear(GL_DEPTH_BUFFER_BIT);	
-	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+	glEnable(GL_DEPTH_TEST);
 	GLfloat LA_rgba[] = {1.0,1.0,1.0,1.0};
 	GLfloat OA_rgba[] = {0.25,0.25,0.25,1.0};
 	GLfloat LD_rgba[] = {1.0,1.0,1.0,1.0};
@@ -62,8 +64,24 @@ void display(){
 	GLfloat LE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
 	GLfloat OE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
 	LightingStuff(LA_rgba, OA_rgba, LD_rgba, OD_rgba, LE_rgba, OE_rgba,32);
+	
+	glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluLookAt(eye_x, eye_y, eye_z, center_x, center_y, center_z,up_x, up_y, up_z);
+    glOrtho(-win,win,-win,win,-win,win);
+    //gluOrtho2D(-5.0,5.0,-5.0,5.0);
+	glPushMatrix();
+		glTranslatef(0.0,-0.5,-1.0);
+		glScalef(3.0,3.0,3.0);
+     
+        //glRotatef(ang_x_cena,1,0,0);
+        //glRotatef(ang_y_cena,0,1,0);
+        //glRotatef(ang_z_cena,0,0,1);
+        //draw_Scene(angx, angy, angz);
+  
+		draw_Scene(ang_x_cena, ang_y_cena, ang_z_cena);
 
-	glEnable(GL_DEPTH_TEST);
+	glPopMatrix();
 	glPushMatrix();
 		glScalef(0.1,0.1,0.1);
 		glLineWidth((GLfloat) 1.0);
@@ -75,7 +93,71 @@ void display(){
 }
 
 void keyboard(unsigned char key, int x, int y){
-	if(torax==0){
+	if(mode_cam_params==1){
+		switch(key){
+			case 'x':
+				eye_x += 0.1;
+				break;
+			case 'X':
+				eye_x -= 0.1;
+				break;
+			case 'y':
+				eye_y += 0.1;
+				break;
+			case 'Y':
+				eye_y -= 0.1;
+				break;
+			case 'z':
+				eye_z += 0.1;
+				break;
+			case 'Z':
+				eye_z -= 0.1;
+				break;			
+			case 'w':
+				center_x += 0.1;		
+				break;		
+			case 'W':		
+				center_x -= 0.1;		
+				break;
+	
+			case 'a':
+				center_y += 0.1;		
+				break;		
+			case 'A':		
+				center_y -= 0.1;		
+				break;
+	
+			case 's':
+				center_z += 0.1;		
+				break;		
+			case 'S':		
+				center_z -= 0.1;		
+				break;		
+		}
+	}
+	else if(mode_rot_cena){
+		switch(key){
+			case 'x':
+				ang_x_cena += delta_ang;
+				break;
+			case 'X':
+				ang_x_cena -= delta_ang;
+				break;
+			case 'y':
+				ang_y_cena += delta_ang;
+				break;
+			case 'Y':
+				ang_y_cena -= delta_ang;
+				break;
+			case 'z':
+				ang_z_cena += delta_ang;
+				break;
+			case 'Z':
+				ang_z_cena -= delta_ang;
+				break;					
+		}
+	}
+	else if(torax==0){
 		switch(key){
 			case 'x':
 				*(mov_mode[0]) += delta_ang;
@@ -143,7 +225,7 @@ void keyboard(unsigned char key, int x, int y){
 	}
 	else if(torax==1){
 		switch(key){
-						case 'c':
+			case 'c':
 				ang_x[13] += delta_ang;
 				break;
 			case 'C':
@@ -165,6 +247,7 @@ void keyboard(unsigned char key, int x, int y){
 			default: break;
 		}
 	}
+
 	switch(key){
 		case '0':
 			torax = 0;
@@ -190,7 +273,12 @@ void keyboard(unsigned char key, int x, int y){
 			mov_mode[3]=ang_x+9 ; mov_mode[4]=ang_y+9 ; mov_mode[5]=ang_z+9 ;		
 			mov_mode[6]=ang_x+11 ; mov_mode[7]=ang_y+11 ; mov_mode[8]=ang_z+11 ;			
 			break;
-
+		case '/':
+			if (mode_cam_params==0){mode_cam_params = 1;}
+			else {mode_cam_params = 0;}
+		case 'm':
+			if (mode_rot_cena==0){mode_rot_cena = 1;}
+			else {mode_rot_cena = 0;}			
 		case '4':
 			torax = 1;						
 			break;
@@ -209,6 +297,8 @@ void keyboard(unsigned char key, int x, int y){
 				float pi_180 = PI/180.0;
 				float rad_deg = pi_180 * ang_y[14]; 		
 				to_walk=1; choseLegs();
+				//printf("deg>%f cos>%f sin>%f\n", rad_deg, cos(rad_deg), sin(rad_deg));
+				//printf("%f %f\n", PI/2.0, -PI/2.0);
 				float sign_x, sign_y;
 				if ((0<rad_deg && rad_deg <= PI/2.0) || (-2.0*PI<rad_deg && rad_deg <= -(3.0/2.0)*(PI)))
 					{sign_x = -1.0; sign_y = -1.0; }
@@ -221,7 +311,9 @@ void keyboard(unsigned char key, int x, int y){
 
 				h_shift[0] += 0.5*sin(rad_deg)*sign_x; h_shift[2] += 0.5*cos(rad_deg)*sign_y;
 			}
-
+		case '[':
+			to_ex1 = 1;
+			break;
 		default: break;
 	}
 }
@@ -234,7 +326,8 @@ void reshape(int w, int h){
     
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(50.0,50.0,50.0,50.0) ;
+	//gluOrtho2D(500.0,-500.0,500.0,-500.0);
+    //glOrtho(-win,win,-win,win,-win,win);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }

@@ -27,6 +27,8 @@ int firstLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna walk_turn */
 int auxLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna !walk_turn */
 void backwardMotion();
 void forwardMotion();
+
+int to_ex1 = 0;
 void rotV1D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 	glPushMatrix();
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
@@ -253,6 +255,10 @@ void Walking(){
 		if (walk_state==0){forwardMotion();}
 		else{backwardMotion();}
 	}
+}
+/* Ex.1 */
+void exDeltoid(){
+
 }
 void draw(List* obj){
 	glBegin(GL_TRIANGLES);
