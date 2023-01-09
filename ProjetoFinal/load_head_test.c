@@ -16,21 +16,7 @@
 
 float* mov_mode[9] = {ang_x, ang_y, ang_z, ang_x+1, ang_y+1, ang_z+1, ang_x+4, ang_y+4, ang_z+4};
 int torax = 0;
-/*
-float ang_xV1D = 0.0, ang_yV1D = 0.0, ang_zV1D = 0.0;
-float ang_xV2D = 0.0, ang_yV2D = 0.0, ang_zV2D = 0.0;
-float ang_xV1E = 0.0, ang_yV1E = 0.0, ang_zV1E = 0.0;
-float ang_xV2E = 0.0, ang_yV2E = 0.0, ang_zV2E = 0.0;
-float ang_xV3D = 0.0, ang_yV3D = 0.0, ang_zV3D = 0.0;
-float ang_xV3E = 0.0, ang_yV3E = 0.0, ang_zV3E = 0.0;
-float ang_xP1D = 0.0, ang_yP1D = 0.0, ang_zP1D = 0.0;
-float ang_xP2D = 0.0, ang_yP2D = 0.0, ang_zP2D = 0.0;
-float ang_xP1E = 0.0, ang_yP1E = 0.0, ang_zP1E = 0.0;
-float ang_xP2E = 0.0, ang_yP2E = 0.0, ang_zP2E = 0.0;
-float ang_xP3D = 0.0, ang_yP3D = 0.0, ang_zP3D = 0.0;
-float ang_xP3E = 0.0, ang_yP3E = 0.0, ang_zP3E = 0.0;
-float ang_xC = 0.0, ang_yC = 0.0, ang_zC = 0.0;
-*/
+
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp);
 void display();
 void keyboard (unsigned char key, int x, int y);
@@ -78,80 +64,78 @@ void display(){
 	LightingStuff(LA_rgba, OA_rgba, LD_rgba, OD_rgba, LE_rgba, OE_rgba,32);
 
 	glEnable(GL_DEPTH_TEST);
-
 	glPushMatrix();
 		glScalef(0.1,0.1,0.1);
-		glLineWidth((GLfloat) 10.0);
+		glLineWidth((GLfloat) 1.0);
+		Walking();
 		hndlGlobal();
 
 	glPopMatrix();
 	glutSwapBuffers();
 }
 
-
-
 void keyboard(unsigned char key, int x, int y){
 	if(torax==0){
 		switch(key){
 			case 'x':
-				*(mov_mode[0]) += 5.0;
+				*(mov_mode[0]) += delta_ang;
 				break;
 			case 'X':
-				*(mov_mode[0]) -= 5.0;
+				*(mov_mode[0]) -= delta_ang;
 				break;
 			case 'y':
-				*(mov_mode[1]) += 5.0;
+				*(mov_mode[1]) += delta_ang;
 				break;
 			case 'Y':
-				*(mov_mode[1]) -= 5.0;
+				*(mov_mode[1]) -= delta_ang;
 				break;
 			case 'z':
-				*(mov_mode[2]) += 5.0;
+				*(mov_mode[2]) += delta_ang;
 				break;
 			case 'Z':
-				*(mov_mode[2]) -= 5.0;
+				*(mov_mode[2]) -= delta_ang;
 				break;			
 
 			case 'w':
-				*(mov_mode[3]) += 5.0;		
+				*(mov_mode[3]) += delta_ang;		
 				break;		
 			case 'W':		
-				*(mov_mode[3]) -= 5.0;		
+				*(mov_mode[3]) -= delta_ang;		
 				break;
 	
 			case 'a':
-				*(mov_mode[4]) += 5.0;		
+				*(mov_mode[4]) += delta_ang;		
 				break;		
 			case 'A':		
-				*(mov_mode[4]) -= 5.0;		
+				*(mov_mode[4]) -= delta_ang;		
 				break;
 	
 			case 's':
-				*(mov_mode[5]) += 5.0;		
+				*(mov_mode[5]) += delta_ang;		
 				break;		
 			case 'S':		
-				*(mov_mode[5]) -= 5.0;		
+				*(mov_mode[5]) -= delta_ang;		
 				break;
 	
 			case 'd':
-				*(mov_mode[6]) += 5.0;		
+				*(mov_mode[6]) += delta_ang;		
 				break;		
 			case 'D':		
-				*(mov_mode[6]) -= 5.0;		
+				*(mov_mode[6]) -= delta_ang;		
 				break;
 	
 			case 'e':
-				*(mov_mode[7]) += 5.0;		
+				*(mov_mode[7]) += delta_ang;		
 				break;		
 			case 'E':		
-				*(mov_mode[7]) -= 5.0;		
+				*(mov_mode[7]) -= delta_ang;		
 				break;
 	
 			case 'r':
-				*(mov_mode[8]) += 5.0;		
+				*(mov_mode[8]) += delta_ang;		
 				break;		
 			case 'R':		
-				*(mov_mode[8]) -= 5.0;		
+				*(mov_mode[8]) -= delta_ang;		
 				break;
 
 			default: break;
@@ -160,22 +144,22 @@ void keyboard(unsigned char key, int x, int y){
 	else if(torax==1){
 		switch(key){
 						case 'c':
-				ang_x[13] += 5.0;
+				ang_x[13] += delta_ang;
 				break;
 			case 'C':
-				ang_x[13] -= 5.0;
+				ang_x[13] -= delta_ang;
 				break;
 			case 'v':
-				ang_y[13] += 5.0;
+				ang_y[13] += delta_ang;
 				break;
 			case 'V':
-				ang_y[13] -= 5.0;
+				ang_y[13] -= delta_ang;
 				break;
 			case 'b':
-				ang_z[13] += 5.0;
+				ang_z[13] += delta_ang;
 				break;
 			case 'B':
-				ang_z[13] -= 5.0;
+				ang_z[13] -= delta_ang;
 				break;
 
 			default: break;
@@ -211,11 +195,16 @@ void keyboard(unsigned char key, int x, int y){
 			torax = 1;						
 			break;
 		case '+':
-			ang_y[14] += 5.0;
+			ang_y[14] += delta_ang;
 			break;
 		case '-':
-			ang_y[14] -= 5.0;			
+			ang_y[14] -= delta_ang;			
 			break;
+
+		case '.':
+			printf("Walking key\n");		
+			to_walk=1; choseLegs();
+			walk_shift = h_shift + 5.0;			
 
 		default: break;
 	}

@@ -8,10 +8,23 @@ void rotV3D(float* ref[], List** parts, float* angx, float* angy, float* angz);
 void rotT(float* ref[], List** parts, float* angx, float* angy, float* angz, void (*h_vd)(), void (*h_ve)(), void (*h_t)());
 void hndlVD(); void hndlVE(); void hndlPE(); void hndlPD(); void hndlT(); void hndlH(); void hndlGlobal();
 void draw(List* obj);
-/* ang_()V1D, ang_()V2D, ang_()V1E, ang_()V2E, ang_()V3D, ang_()V3E, ang_()P1D, ang_()P2D, ang_()P1E, ang_()P2E, ang_()P3D, ang_()P3E, ang_()C, ang_()T, ang_()Global */
+/* ang_(0)V1D, ang_(1)V2D, ang_(2)V1E, ang_(3)V2E, ang_(4)V3D, ang_(5)V3E, ang_(6)P1D, ang_(7)P2D, ang_(8)P1E, ang_(9)P2E, ang_(10)P3D, ang_(11)P3E, ang_(12)C,
+ang_(13)T, ang_(14)Global */
 float ang_x[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0}; 
 float ang_y[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
 float ang_z[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
+float h_shift = 0.0;
+
+double delta_ang = 1.0;
+float walk_ang_x[6]; /* angulo final de cada junta (E: [0,1,2], D: [3,4,5]) */
+float walk_start_ang_x[6]; /* angulo inicial de cada junta (E: [0,1,2], D: [3,4,5]) */
+float walk_shift; /* posicao final de deslocamento */
+int to_walk = 0; /* modo Walking */
+int walk_state = 0; /* */
+int walk_turn = 0; /* 0: perna (esquerda forwardMotion, direita backwardMotion), 1: perna (direita forwardMotion, esquerda backwardMotion) */
+int firstLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna walk_turn */ 
+int auxLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna !walk_turn */
+
 void rotV1D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 	glPushMatrix();
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
@@ -125,13 +138,6 @@ void hndlH(){
 	float angx[] = {ang_x[12]}; float angy[] = {ang_y[12]}; float angz[] = {ang_z[12]};
 	rotH(ref, parts, angx, angy, angz);
 }
-/*
-void rotGlobal(){
-	hndlT();
-	hndlPD();
-	hndlPE();
-	hndlH();
-}*/
 void hndlGlobal(){
 	float* ref[] = {ref_joints[13]};
 	float angx[] = {ang_x[14]}; float angy[] = {ang_y[14]}; float angz[] = {ang_z[14]};
@@ -145,6 +151,96 @@ void hndlGlobal(){
 		hndlPD();
 		hndlPE();
 	glPopMatrix();
+}
+ // x: P1+, X: P1-, w: P2+, W: P2-, d: P3+, D: P3-
+void choseLegs(){
+	int sign_esq, sign_dir;
+	if(walk_turn==1) {
+		sign_dir=-1; sign_esq=1;
+		firstLeg_idx[0] = 6; firstLeg_idx[1] = 7; firstLeg_idx[2] = 10;
+		auxLeg_idx[0] = 8; auxLeg_idx[1] = 9; auxLeg_idx[2] = 11;
+		
+		walk_ang_x[0] = ang_x[6] + sign_esq*50.0; walk_ang_x[1] = ang_x[7] - 50.0; walk_ang_x[2] = ang_x[10] - 25.0;
+		walk_ang_x[3] = ang_x[8] + sign_dir*50.0; walk_ang_x[4] = ang_x[9] - 50.0; walk_ang_x[5] = ang_x[11] - 25.0;
+		walk_start_ang_x[0] = ang_x[6]; walk_start_ang_x[1] = ang_x[7]; walk_start_ang_x[2] = ang_x[10];
+		walk_start_ang_x[3] = ang_x[8]; walk_start_ang_x[4] = ang_x[9]; walk_start_ang_x[5] = ang_x[11];
+	}
+	else{
+		sign_esq=1; sign_dir=-1;
+		firstLeg_idx[0] = 8; firstLeg_idx[1] = 9; firstLeg_idx[2] = 11;
+		auxLeg_idx[0] = 6; auxLeg_idx[1] = 7; auxLeg_idx[2] = 10;
+		
+		walk_ang_x[0] = ang_x[8] + sign_esq*50.0; walk_ang_x[1] = ang_x[9] - 50.0; walk_ang_x[2] = ang_x[11] - 25.0;
+		walk_ang_x[3] = ang_x[6] + sign_dir*50.0; walk_ang_x[4] = ang_x[7] - 50.0; walk_ang_x[5] = ang_x[10] - 25.0;
+		walk_start_ang_x[0] = ang_x[8]; walk_start_ang_x[1] = ang_x[9]; walk_start_ang_x[2] = ang_x[11];
+		walk_start_ang_x[3] = ang_x[6]; walk_start_ang_x[4] = ang_x[7]; walk_start_ang_x[5] = ang_x[10];		
+	}
+	//printf("walkturn %d\n", walk_turn);
+	//printf("LEFTLEG: P1: %f->%f, P2: %f->%f\n", walk_start_ang_x[0], walk_ang_x[0], walk_start_ang_x[1], walk_ang_x[1]);
+	//printf("RIGHTLEG: P1: %f->%f, P2: %f->%f\n", walk_start_ang_x[3], walk_ang_x[3], walk_start_ang_x[4], walk_ang_x[4]);
+}
+void backwardMotion(){
+	int reach[6] = {0};
+	if(ang_x[firstLeg_idx[0]]>walk_start_ang_x[0]){
+		ang_x[firstLeg_idx[0]] -= delta_ang;
+	} else {reach[0]=1;}
+	if(ang_x[firstLeg_idx[1]]<walk_start_ang_x[1]){
+		ang_x[firstLeg_idx[1]] += delta_ang;
+	} else {reach[1]=1;}
+	if(ang_x[firstLeg_idx[2]]<walk_start_ang_x[2]){
+		ang_x[firstLeg_idx[2]] += delta_ang;
+	} else {reach[2]=1;}
+	/* -- */
+	if(ang_x[auxLeg_idx[0]]<walk_start_ang_x[3]){
+		ang_x[auxLeg_idx[0]] += delta_ang;
+	} else {reach[3]=1;}
+	if(ang_x[auxLeg_idx[1]]<walk_start_ang_x[4]){
+		ang_x[auxLeg_idx[1]] += delta_ang;
+	} else {reach[4]=1;}
+	if(ang_x[auxLeg_idx[2]]<walk_start_ang_x[5]){
+		ang_x[auxLeg_idx[2]] += delta_ang;
+	} else {reach[5]=1;}
+	//printf("LEFTLEG: P1: %f, P2: %f\n", ang_x[firstLeg_idx[0]], ang_x[firstLeg_idx[1]]);
+	//printf("RIGHTLEG: P1: %f, P2: %f\n",ang_x[auxLeg_idx[0]], ang_x[auxLeg_idx[1]]);
+	if (reach[0] && reach[1] && reach[3] && reach[4]){/*printf("reach backward\n");*/walk_state = 0; to_walk = 0; walk_turn = !walk_turn;}
+
+}
+void forwardMotion(){
+	int reach[6] = {0};
+
+	if(ang_x[firstLeg_idx[0]]<walk_ang_x[0]){
+		ang_x[firstLeg_idx[0]] += delta_ang;
+	} else {reach[0]=1;}
+	if(ang_x[firstLeg_idx[1]]>walk_ang_x[1]){
+		ang_x[firstLeg_idx[1]] -= delta_ang;
+	} else {reach[1]=1;}
+	if(ang_x[firstLeg_idx[2]]>walk_ang_x[2]){
+		ang_x[firstLeg_idx[2]] -= delta_ang;
+	} else {reach[2]=1;}
+	/* -- */
+	if(ang_x[auxLeg_idx[0]]>walk_ang_x[3]){
+		ang_x[auxLeg_idx[0]] -= delta_ang;
+	} else {reach[3]=1;}
+	if(ang_x[auxLeg_idx[1]]>walk_ang_x[4]){
+		ang_x[auxLeg_idx[1]] -= delta_ang;
+	} else {reach[4]=1;}
+	if(ang_x[auxLeg_idx[2]]>walk_ang_x[5]){
+		ang_x[auxLeg_idx[2]] -= delta_ang;
+	} else {reach[5]=1;}
+	//printf("LEFTLEG: P1: %f, P2: %f\n", ang_x[firstLeg_idx[0]], ang_x[firstLeg_idx[1]]);
+	//printf("RIGHTLEG: P1: %f, P2: %f\n",ang_x[auxLeg_idx[0]], ang_x[auxLeg_idx[1]]);
+	if (reach[0] && reach[1] && reach[3] && reach[4]){walk_state = 1;/*printf("reach forward\n");*/}
+}
+/*
+	FIRSTLEG->FORWARD(P1+,P2-), BACKWARD(P1-, P2+)
+	AUXLEG->FORWARD(P1-,P2-), BACKWARD(P1+, P2+)
+
+*/
+void Walking(){
+	if(to_walk){
+		if (walk_state==0){forwardMotion();}
+		else{backwardMotion();}
+	}
 }
 void draw(List* obj){
 	glBegin(GL_TRIANGLES);
