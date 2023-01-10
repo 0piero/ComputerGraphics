@@ -67,7 +67,7 @@ void getBitmapImageData(char *fileName, BMP *Image){
 
 
 /*Função para Carregar uma imagem .BMP */
-void chargeTextura(char* fileName, int current_texture){
+void chargeTexture(char* fileName, int current_texture){
 
     BMP c_texture;
 
