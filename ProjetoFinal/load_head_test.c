@@ -1,5 +1,4 @@
 #include <GL/glut.h>
-//#include <glu.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -23,11 +22,14 @@ void display();
 void keyboard (unsigned char key, int x, int y);
 void reshape(int w, int h);
 void Timer(int extra);
-
-double eye_x = 0.0, eye_y = 0.0, eye_z = 0.0;
-double center_x = 0.0, center_y = 0.0, center_z = 1.0;
+// -5.000086 -19.578445 -39.323221 -19.480146 -135.117079 -246.576779 27.000000 -338.000000 -2.000000
+double eye_x = -5.000086, eye_y = -19.578445, eye_z =  -39.323221; 
+double center_x = -19.480146, center_y = -135.117079, center_z = -246.576779; 
 double up_x = 0.0, up_y = 1.0, up_z = 0.0;
-double win = 3.0;
+float cam_rot_x =27.000000 ;float cam_rot_y=-338.000000; float cam_rot_z=-2.000000;
+float cam_trans_x =0.0;float cam_trans_y =0.0;float cam_trans_z =0.0;
+double win = 28.900000;
+
 float ang_x_cena, ang_y_cena, ang_z_cena;
 int mode_cam_params = 0;
 int mode_rot_cena = 0;
@@ -54,9 +56,27 @@ void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat
 
 
 void display(){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-win,win,-win,win,-200,200);
+	
 	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+	
 	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(eye_x, eye_y, eye_z, center_x , center_y, center_z,up_x, up_y, up_z);
+	glTranslatef( 0 , 0 , cam_trans_z ) ;
+	glTranslatef( cam_trans_x , cam_trans_y , 0 ) ;
+	glRotatef( cam_rot_x , 1 , 0 , 0 ) ;
+	glRotatef( cam_rot_y , 0 , 1 , 0 ) ;
+	glRotatef( cam_rot_z , 0 , 0 , 1 ) ;
+	
+
+
 	GLfloat LA_rgba[] = {1.0,1.0,1.0,1.0};
 	GLfloat OA_rgba[] = {0.25,0.25,0.25,1.0};
 	GLfloat LD_rgba[] = {1.0,1.0,1.0,1.0};
@@ -64,16 +84,12 @@ void display(){
 	GLfloat LE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
 	GLfloat OE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
 	LightingStuff(LA_rgba, OA_rgba, LD_rgba, OD_rgba, LE_rgba, OE_rgba,32);
-	
-	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluLookAt(eye_x, eye_y, eye_z, center_x, center_y, center_z,up_x, up_y, up_z);
-    glOrtho(-win,win,-win,win,-win,win);
-    //gluOrtho2D(-5.0,5.0,-5.0,5.0);
+
+
 	glPushMatrix();
-		glTranslatef(0.0,-0.5,-1.0);
-		glScalef(3.0,3.0,3.0);
-     
+		glTranslatef(0.0,-1.0,-1.0);
+		glScalef(50.0,60.0,60.0);
+     	exDeltoid();
         //glRotatef(ang_x_cena,1,0,0);
         //glRotatef(ang_y_cena,0,1,0);
         //glRotatef(ang_z_cena,0,0,1);
@@ -82,79 +98,153 @@ void display(){
 		draw_Scene(ang_x_cena, ang_y_cena, ang_z_cena);
 
 	glPopMatrix();
+
 	glPushMatrix();
-		glScalef(0.1,0.1,0.1);
+		glTranslatef(0.0,15.0,0.0);
+		glScalef(3.5,3.5,3.5);
 		glLineWidth((GLfloat) 1.0);
 		Walking();
 		hndlGlobal();
 
 	glPopMatrix();
+ 
+
 	glutSwapBuffers();
 }
 
 void keyboard(unsigned char key, int x, int y){
 	if(mode_cam_params==1){
+		//printf("%f %f %f %f %f %f %f %f %f %f\n", eye_x, eye_y, eye_z, center_x, center_y, center_z, cam_rot_x, cam_rot_y, cam_rot_z, win);
 		switch(key){
 			case 'x':
-				eye_x += 0.1;
+				eye_x += 0.5;
 				break;
 			case 'X':
-				eye_x -= 0.1;
+				eye_x -= 0.5;
 				break;
 			case 'y':
-				eye_y += 0.1;
+				eye_y += 0.5;
 				break;
 			case 'Y':
-				eye_y -= 0.1;
+				eye_y -= 0.5;
 				break;
 			case 'z':
-				eye_z += 0.1;
+				eye_z += 0.5;
 				break;
 			case 'Z':
-				eye_z -= 0.1;
+				eye_z -= 0.5;
 				break;			
 			case 'w':
-				center_x += 0.1;		
+				center_x += 0.5;		
 				break;		
 			case 'W':		
-				center_x -= 0.1;		
+				center_x -= 0.5;		
 				break;
 	
 			case 'a':
-				center_y += 0.1;		
+				center_y += 0.5;		
 				break;		
 			case 'A':		
-				center_y -= 0.1;		
+				center_y -= 0.5;		
 				break;
-	
+			case 'd':
+				win += 0.1;		
+				break;		
+			case 'D':		
+				win -= 0.1;		
+				break;	
 			case 's':
-				center_z += 0.1;		
+				center_z += 0.5;		
 				break;		
 			case 'S':		
-				center_z -= 0.1;		
+				center_z -= 0.5;		
+				break;
+
+
+			case 'e':
+				cam_rot_x += 1.0;		
 				break;		
+			case 'E':		
+				cam_rot_x -= 1.0;		
+				break;
+	
+			case 'r':
+				cam_rot_y += 1.0;		
+				break;		
+			case 'R':		
+				cam_rot_y -= 1.0;		
+				break;
+			case 't':
+				cam_rot_z += 1.0;		
+				break;		
+			case 'T':		
+				cam_rot_z -= 1.0;		
+				break;	
+
+			case 'g':
+				cam_trans_x += 1.0;
+				break;		
+			case 'G':		
+				cam_trans_x -= 1.0;
+				break;
+			case 'h':
+				cam_trans_y += 1.0;
+				break;		
+			case 'H':		
+				cam_trans_y -= 1.0;
+				break;								
+			case 'j':
+				cam_trans_z += 1.0;
+				break;		
+			case 'J':		
+				cam_trans_z -= 1.0;
+				break;																								
 		}
 	}
-	else if(mode_rot_cena){
+	else if(to_ex1==1){
+		//printf("%f %f %f %f %f %f\n", halter1_shift[0], halter1_shift[1], halter1_shift[2],
+		//	h_shift[0], h_shift[2], ang_y[14]);
+		//printf("%f %f %f %f %f %f\n", ang_x[0], ang_y[0], ang_z[0], ang_x[2], ang_y[2], ang_z[2]);
+		//0.000000 -0.050000 0.175000 1.400000 -4.299998 0.000000
+		//0.000000 0.000000 75.000000 0.000000 0.000000 75.000000
 		switch(key){
 			case 'x':
-				ang_x_cena += delta_ang;
+				halter1_shift[0] += 0.025;
+				halter2_shift[0] += 0.025;
 				break;
 			case 'X':
-				ang_x_cena -= delta_ang;
+				halter1_shift[0] -= 0.025;
+				halter2_shift[0] -= 0.025;
 				break;
 			case 'y':
-				ang_y_cena += delta_ang;
+				halter1_shift[1] += 0.025;
+				halter2_shift[1] += 0.025;
 				break;
 			case 'Y':
-				ang_y_cena -= delta_ang;
+				halter1_shift[1] -= 0.025;
+				halter2_shift[1] -= 0.025;
 				break;
 			case 'z':
-				ang_z_cena += delta_ang;
+				halter1_shift[2] += 0.025;
+				halter2_shift[2] += 0.025;
 				break;
 			case 'Z':
-				ang_z_cena -= delta_ang;
-				break;					
+				halter1_shift[2] -= 0.025;
+				halter2_shift[2] -= 0.025;
+				break;
+			case 'a':
+				h_shift[0] += 0.1;
+				break;
+			case 'A':
+				h_shift[0] -= 0.1;
+				break;				
+			case 'b':
+				h_shift[2] += 0.1;
+				break;
+			case 'B':
+				h_shift[2] -= 0.1;
+				break;								
+							
 		}
 	}
 	else if(torax==0){
@@ -219,6 +309,24 @@ void keyboard(unsigned char key, int x, int y){
 			case 'R':		
 				*(mov_mode[8]) -= delta_ang;		
 				break;
+			
+			case 'i':
+				halter1_angz +=1.0;
+				//printf("a\n");		
+				break;		
+			case 'I':		
+				halter1_angz -=1.0;
+				//printf("a\n");		
+				break;
+	
+			case 'o':
+				halter2_angz +=1.0;		
+				//printf("b\n");
+				break;		
+			case 'O':		
+				halter2_angz -=1.0;		
+				break;			
+				//printf("b\n");
 
 			default: break;
 		}
@@ -276,9 +384,10 @@ void keyboard(unsigned char key, int x, int y){
 		case '/':
 			if (mode_cam_params==0){mode_cam_params = 1;}
 			else {mode_cam_params = 0;}
-		case 'm':
-			if (mode_rot_cena==0){mode_rot_cena = 1;}
-			else {mode_rot_cena = 0;}			
+			break;
+		//case 'm':
+		//	if (mode_rot_cena==0){mode_rot_cena = 1;}
+		//	else {mode_rot_cena = 0;}			
 		case '4':
 			torax = 1;						
 			break;
@@ -293,12 +402,9 @@ void keyboard(unsigned char key, int x, int y){
 
 		case '.':
 			if(to_walk==0){
-				printf("Walking key\n");
 				float pi_180 = PI/180.0;
 				float rad_deg = pi_180 * ang_y[14]; 		
 				to_walk=1; choseLegs();
-				//printf("deg>%f cos>%f sin>%f\n", rad_deg, cos(rad_deg), sin(rad_deg));
-				//printf("%f %f\n", PI/2.0, -PI/2.0);
 				float sign_x, sign_y;
 				if ((0<rad_deg && rad_deg <= PI/2.0) || (-2.0*PI<rad_deg && rad_deg <= -(3.0/2.0)*(PI)))
 					{sign_x = -1.0; sign_y = -1.0; }
@@ -311,8 +417,20 @@ void keyboard(unsigned char key, int x, int y){
 
 				h_shift[0] += 0.5*sin(rad_deg)*sign_x; h_shift[2] += 0.5*cos(rad_deg)*sign_y;
 			}
+			break;
 		case '[':
-			to_ex1 = 1;
+			if (to_ex1==0){
+				to_ex1 = 1;
+				halter1_shift[0] = halter2_shift[0] = 0.000000;
+				halter1_shift[1] = halter2_shift[1] = -0.050000;
+				halter1_shift[2] = halter2_shift[2] = 0.175000; 
+				h_shift[0] = 1.400000; h_shift[2] = -4.299998; ang_y[14] = 0.000000;
+				ang_x[0] = 0.0; ang_y[0] = 0.0; ang_z[0] = -75.0;
+				ang_x[2] = 0.0; ang_y[2] = 0.0; ang_z[2] = 75.0;
+				halter2_angz = -1.0; halter1_angz = 1.0;
+				ex1_rot_angs[1] = ang_z[0] + 50.0; ex1_rot_angs[0] = ang_z[2] - 50.0;
+			}
+			else {to_ex1 = 0;}
 			break;
 		default: break;
 	}
@@ -326,10 +444,12 @@ void reshape(int w, int h){
     
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	
 	//gluOrtho2D(500.0,-500.0,500.0,-500.0);
-    //glOrtho(-win,win,-win,win,-win,win);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+    glOrtho(-win,win,-win,win,-200,200);
+	
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 }
 
 void Timer(int extra){
@@ -366,6 +486,21 @@ void menu_movements(int option){
         case 4:
             torax = 1;
             break;
+        case 5:
+			if (to_ex1==0){
+				to_ex1 = 1;
+				halter1_shift[0] = halter2_shift[0] = 0.000000;
+				halter1_shift[1] = halter2_shift[1] = -0.050000;
+				halter1_shift[2] = halter2_shift[2] = 0.175000; 
+				h_shift[0] = 1.400000; h_shift[2] = -4.299998; ang_y[14] = 0.000000;
+				ang_x[0] = 0.0; ang_y[0] = 0.0; ang_z[0] = -75.0;
+				ang_x[2] = 0.0; ang_y[2] = 0.0; ang_z[2] = 75.0;
+				halter2_angz = -1.0; halter1_angz = 1.0;
+				ex1_rot_angs[1] = ang_z[0] + 50.0; ex1_rot_angs[0] = ang_z[2] - 50.0;
+			}
+			else {to_ex1 = 0;}
+			break;       	
+
         default:
             break;
     }
@@ -427,11 +562,12 @@ int main(int argc, char** argv){
 	int menu;
 
 	menu = glutCreateMenu(menu_movements);
-    	glutAddMenuEntry("Movimentar braço direito",1);
-    	glutAddMenuEntry("Movimentar braço esquerdo",0);
+    	glutAddMenuEntry("Movimentar braco direito",1);
+    	glutAddMenuEntry("Movimentar braco esquerdo",0);
     	glutAddMenuEntry("Movimentar perna direita",3);
     	glutAddMenuEntry("Movimentar perna esquerda",2);
     	glutAddMenuEntry("Movimentar torax",4);
+    	glutAddMenuEntry("Fortalecimento de Deltoide",5);
     	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	
 	glutKeyboardFunc(keyboard);

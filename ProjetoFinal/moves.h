@@ -1,4 +1,5 @@
 #include "human.h"
+#include "Scene.h"
 #ifndef MOVES_HEADER
 #define MOVES_HEADER
 
@@ -28,7 +29,6 @@ int auxLeg_idx[3]; /* ang_y_IDX(V1, V2, V3) da perna !walk_turn */
 void backwardMotion();
 void forwardMotion();
 
-int to_ex1 = 0;
 void rotV1D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 	glPushMatrix();
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
@@ -40,6 +40,30 @@ void rotV1D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 		rotV2D(ref, parts, angx, angy, angz);
 	glPopMatrix();
 }
+/*
+void rotP1INVD(float* ref[], List** parts, float* angx, float* angy, float* angz){
+	glPushMatrix();
+		glTranslatef(ref_joints[9][0],ref_joints[9][1],ref_joints[9][2]);
+		glRotatef(angx[0], 1.0, 0.0, 0.0);
+		glRotatef(angy[0], 0.0, 1.0, 0.0);
+		glRotatef(angz[0], 0.0, 0.0, 1.0);
+		glTranslatef(-ref_joints[9][0],-ref_joints[9][1],-ref_joints[9][2]); // V1D
+		draw(parts[13]);
+		//rotV2D(ref, parts, angx, angy, angz);
+	glPopMatrix();
+}
+void rotP1INVE(float* ref[], List** parts, float* angx, float* angy, float* angz){
+	glPushMatrix();
+		glTranslatef(ref_joints[8][0],ref_joints[8][1],ref_joints[8][2]);
+		glRotatef(angx[0], 1.0, 0.0, 0.0);
+		glRotatef(angy[0], 0.0, 1.0, 0.0);
+		glRotatef(angz[0], 0.0, 0.0, 1.0);
+		glTranslatef(-ref_joints[8][0],-ref_joints[8][1],-ref_joints[8][2]); // V1D
+		draw(parts[14]);
+		//rotV2D(ref, parts, angx, angy, angz);
+	glPopMatrix();
+}
+*/
 
 void rotV2D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 	glPushMatrix();
@@ -257,9 +281,87 @@ void Walking(){
 	}
 }
 /* Ex.1 */
+int elvrArm(); int elvlArm(); int downrArm();int downlArm();
+float halter1_shift[3] = {0.0, 0.0, 0.0};
+float halter2_shift[3] = {0.0, 0.0, 0.0};
+float halter1_angz = 0.0; float halter2_angz = 0.0;
+int ex1_state =0; float ex1_rot_angs[2] = {0.0, 0.0}; int reps_ex1 = 3; int ex1_count = 0; int to_ex1 = 0;
+// glTranslatef(0.0,+0.040,-z_max/1.07);
+// glTranslatef(0.2,+0.040,-z_max/1.07);
 void exDeltoid(){
+	glPushMatrix();
+		//glTranslatef(halter1_shift[0], halter1_shift[1], halter1_shift[2]);
+		//glTranslatef(+0.0,+0.040,-z_max/1.07);
+		//glTranslatef(ref_joints[0][0], ref_joints[0][1], ref_joints[0][2]);
+		//glRotatef(halter1_angz, 0.0, 0.0, 1.0);
+		//glTranslatef(-ref_joints[0][0], -ref_joints[0][1], -ref_joints[0][2]);
+		//glTranslatef(-0.0,-0.040,+z_max/1.07);		
+		draw_firstHalter();
+	glPopMatrix();
+	glPushMatrix();
+		//glTranslatef(halter2_shift[0], halter2_shift[1], halter2_shift[2]);
+		//glTranslatef(+0.2,+0.040,-z_max/1.07);
+		//glTranslatef(ref_joints[1][0], ref_joints[1][1], ref_joints[1][2]);
+		//glRotatef(halter2_angz, 0.0, 0.0, 1.0);
+		//glTranslatef(-ref_joints[1][0], -ref_joints[1][1], -ref_joints[1][2]);
+		//glTranslatef(-0.2,-0.040,+z_max/1.07);		
+		draw_secondHalter();
+	glPopMatrix();	
+	if (to_ex1){
+
+		if(ex1_state==0){
+			int a1 = elvlArm(); int a2 = elvrArm();
+			if(a1 && a2){ex1_state = 1;}
+		}
+		else{
+			int a1 = downlArm(); int a2 = downrArm();
+			if(a2 && a1){ex1_state = 0; ex1_count+=1;}
+		}
+		if(ex1_count == reps_ex1){
+			to_ex1 = 0; ex1_count = 0;
+			halter1_shift[0]= 0.0; halter1_shift[1] = 0.0; halter1_shift[2] = 0.0;
+			halter2_shift[0]= 0.0; halter2_shift[1] = 0.0; halter2_shift[2] = 0.0;
+			halter1_angz = 0.0; halter2_angz = 0.0;
+		}
+	}
 
 }
+int elvrArm(){
+	if(ang_z[0] < ex1_rot_angs[1]){
+		ang_z[0] += delta_ang/5.0;
+		//halter2_angz += delta_ang;
+		return 0;
+	}
+	else{return 1;}
+
+}
+int elvlArm(){
+	if(ang_z[2] > ex1_rot_angs[0]){
+		ang_z[2] -= delta_ang/5.0;
+		//halter1_angz -= delta_ang;
+		return 0;
+	}	
+	else{return 1;}
+}
+int downrArm(){
+	if(ang_z[0] > ex1_rot_angs[1] - 50.0){
+		ang_z[0] -= delta_ang/5.0;
+		//halter2_angz -= delta_ang;
+		return 0;
+	}
+	else{return 1;}
+}
+int downlArm(){
+	if(ang_z[2] < ex1_rot_angs[0] + 50.0){
+		ang_z[2] += delta_ang/5.0;
+		//halter1_angz += delta_ang;
+		return 0;
+	}	
+	else{return 1;}
+}
+
+
+
 void draw(List* obj){
 	glBegin(GL_TRIANGLES);
 		Node* fc_vtx = listGetittem(obj, 0);
