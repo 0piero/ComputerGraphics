@@ -9,59 +9,60 @@ typedef struct BMPImagem
 }BMP;
 
 GLuint texture_id[2];
-
+void chargeTexture(char* fileName, int current_texture);
+void init_texture(int textures);
 void getBitmapImageData(char *fileName, BMP *Image){
     FILE *image = NULL;
     unsigned short numPlanes;
     unsigned short numBPR;
-	int a;
+    int a;
 
     if((image = fopen(fileName, "rb")) == NULL){
-		printf("ERROR: getBitmapImageData - %s not found.\n",fileName);
+        printf("ERROR: getBitmapImageData - %s not found.\n",fileName);
     }
     // Seek forward to width and height info
     fseek(image,18,SEEK_CUR);
 
     if((a = fread(&Image->width,4,1,image)) != 1){
-		printf("ERROR: getBitmapImageData - Couldn't read width from %s.\n",fileName);
+        printf("ERROR: getBitmapImageData - Couldn't read width from %s.\n",fileName);
     }
 
     if((a = fread(&Image->height,4,1,image)) != 1){
-		printf("ERROR: getBitmapImageData - Couldn't read height from %s.\n",fileName);
+        printf("ERROR: getBitmapImageData - Couldn't read height from %s.\n",fileName);
     }
 
     if((fread(&numPlanes,2,1,image)) != 1){
-		printf("ERROR: getBitmapImageData - Couldn't read plane count from %s.\n",fileName);
+        printf("ERROR: getBitmapImageData - Couldn't read plane count from %s.\n",fileName);
     }
 
     if(numPlanes != 1){
-		printf("ERROR: getBitmapImageData - Plane count from %s.\n",fileName);
+        printf("ERROR: getBitmapImageData - Plane count from %s.\n",fileName);
     }
 
     if((a = fread(&numBPR,2,1,image)) != 1){
-		printf("ERROR: getBitmapImageData - Couldn't read BPP from %s.\n",fileName);
+        printf("ERROR: getBitmapImageData - Couldn't read BPP from %s.\n",fileName);
     }
 
     if(numBPR != 24){
-		printf("ERROR: getBitmapImageData - BPP from %s.\n ",fileName);
+        printf("ERROR: getBitmapImageData - BPP from %s.\n ",fileName);
     }
     // Seek forward to image data
     fseek(image,24,SEEK_CUR);
-	// Calculate the image's total size in bytes. Note how we multiply the
-	// result of (width * height) by 3. This is becuase a 24 bit color BMP
-	// file will give you 3 bytes per pixel.
+    // Calculate the image's total size in bytes. Note how we multiply the
+    // result of (width * height) by 3. This is becuase a 24 bit color BMP
+    // file will give you 3 bytes per pixel.
     int nTotalImagesize = (Image->width*Image->height)*3;
 
     Image->data = (char*) malloc(nTotalImagesize);
 
     if((a = fread(Image->data,nTotalImagesize,1,image)) != 1)
-		printf("ERROR: getBitmapImageData - Couldn't read image data from %s.\n",fileName);
-	// Finally, rearrange BGR to RGB
-	char charTemp;
+        printf("ERROR: getBitmapImageData - Couldn't read image data from %s.\n",fileName);
+    // Finally, rearrange BGR to RGB
+    char charTemp;
     for(a = 0; a < nTotalImagesize;a += 3){
-		charTemp = Image->data[a];
-		Image->data[a] = Image->data[a+2];
-		Image->data[a+2] = charTemp;
+        charTemp = Image->data[a];
+        Image->data[a] = Image->data[a+2];
+        Image->data[a+2] = charTemp;
     }
 }
 
@@ -91,8 +92,8 @@ void chargeTexture(char* fileName, int current_texture){
 
 
 void init_texture(int textures) {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);			/* Black Background */
-	glEnable(GL_DEPTH_TEST);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);           /* Black Background */
+    glEnable(GL_DEPTH_TEST);
          glGenTextures(1,&texture_id[textures]);
 
 }

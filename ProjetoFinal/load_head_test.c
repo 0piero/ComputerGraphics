@@ -18,6 +18,8 @@ float* mov_mode[9] = {ang_x, ang_y, ang_z, ang_x+1, ang_y+1, ang_z+1, ang_x+4, a
 int torax = 0;
 
 void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat* OD_rgba, GLfloat* LE_rgba, GLfloat* OE_rgba, int exp);
+float light_x=50.0; float light_y=50.0;float light_z=50.0;
+int light_mode = 0;
 void display();
 void keyboard (unsigned char key, int x, int y);
 void reshape(int w, int h);
@@ -49,7 +51,7 @@ void LightingStuff(GLfloat* LA_rgba, GLfloat* OA_rgba, GLfloat* LD_rgba, GLfloat
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-	GLfloat position[] = {50.0, 50.0, 50.0, 1.0};
+	GLfloat position[] = {light_x, light_y, light_z, 1.0};
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 }
 
@@ -81,11 +83,11 @@ void display(){
 	GLfloat OA_rgba[] = {0.25,0.25,0.25,1.0};
 	GLfloat LD_rgba[] = {1.0,1.0,1.0,1.0};
 	GLfloat OD_rgba[] = {0.15,0.15,0.15,1.0};
-	GLfloat LE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
-	GLfloat OE_rgba[] = {-0.0, -0.0, -0.0, 1.0};
+	GLfloat LE_rgba[] = {-0.1, -0.1, -0.1, 1.0};
+	GLfloat OE_rgba[] = {-0.1, -0.1, -0.1, 1.0};
 	LightingStuff(LA_rgba, OA_rgba, LD_rgba, OD_rgba, LE_rgba, OE_rgba,32);
 
-
+	agxEx();
 	glPushMatrix();
 		glTranslatef(0.0,-1.0,-1.0);
 		glScalef(50.0,60.0,60.0);
@@ -201,6 +203,28 @@ void keyboard(unsigned char key, int x, int y){
 				break;																								
 		}
 	}
+	else if(light_mode==1){
+		switch(key){
+			case 'x':
+				light_x += 0.5;
+				break;
+			case 'X':
+				light_x -= 0.5;
+				break;
+			case 'y':
+				light_y += 0.5;
+				break;
+			case 'Y':
+				light_y -= 0.5;
+				break;
+			case 'z':
+				light_z += 0.5;
+				break;
+			case 'Z':
+				light_z -= 0.5;
+				break;
+		}			
+	}
 	else if(to_ex1==1){
 		//printf("%f %f %f %f %f %f\n", halter1_shift[0], halter1_shift[1], halter1_shift[2],
 		//	h_shift[0], h_shift[2], ang_y[14]);
@@ -309,22 +333,22 @@ void keyboard(unsigned char key, int x, int y){
 			case 'R':		
 				*(mov_mode[8]) -= delta_ang;		
 				break;
-			
+
 			case 'i':
-				halter1_angz +=1.0;
+				ang_agx[2] += 1.0;
 				//printf("a\n");		
 				break;		
 			case 'I':		
-				halter1_angz -=1.0;
+				ang_agx[2] -= 1.0;
 				//printf("a\n");		
 				break;
 	
 			case 'o':
-				halter2_angz +=1.0;		
+				k_perna += 0.1;		
 				//printf("b\n");
 				break;		
 			case 'O':		
-				halter2_angz -=1.0;		
+				k_perna -= 0.1;		
 				break;			
 				//printf("b\n");
 
@@ -432,6 +456,19 @@ void keyboard(unsigned char key, int x, int y){
 			}
 			else {to_ex1 = 0;}
 			break;
+		case ']':
+			if (to_agx==0){
+				to_agx=1;
+				agx_ang_fim = ang_agx[2] + 90.0;
+			}
+			else{to_agx==0;}
+			break;
+
+		case  'l':
+			light_mode = 1;
+
+		case 27:
+           exit(0);
 		default: break;
 	}
 }
@@ -499,7 +536,16 @@ void menu_movements(int option){
 				ex1_rot_angs[1] = ang_z[0] + 50.0; ex1_rot_angs[0] = ang_z[2] - 50.0;
 			}
 			else {to_ex1 = 0;}
-			break;       	
+			break;  
+
+		case 6:
+			if (to_agx==0){
+				to_agx=1;
+				agx_ang_fim = ang_agx[2] + 90.0;
+			}
+			else{to_agx==0;}
+
+			break;     	
 
         default:
             break;
@@ -557,6 +603,8 @@ int main(int argc, char** argv){
 	glutInitWindowSize(DISPLAY_WIDTH,DISPLAY_HEIGHT);
 	glutCreateWindow("Human");
 	glutReshapeFunc(reshape);
+	init_texture(0);
+	chargeTexture("wood.bmp",0);
 	glutDisplayFunc(display);
 	
 	int menu;
@@ -568,6 +616,7 @@ int main(int argc, char** argv){
     	glutAddMenuEntry("Movimentar perna esquerda",2);
     	glutAddMenuEntry("Movimentar torax",4);
     	glutAddMenuEntry("Fortalecimento de Deltoide",5);
+    	glutAddMenuEntry("Agachamento",6);
     	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	
 	glutKeyboardFunc(keyboard);

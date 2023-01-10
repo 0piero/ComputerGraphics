@@ -1,19 +1,21 @@
 #include "human.h"
 #include "Scene.h"
+#include <math.h>
 #ifndef MOVES_HEADER
 #define MOVES_HEADER
 
 void rotV1D(float* ref[], List** parts, float* angx, float* angy, float* angz);
 void rotV2D(float* ref[], List** parts, float* angx, float* angy, float* angz);
 void rotV3D(float* ref[], List** parts, float* angx, float* angy, float* angz);
-void rotT(float* ref[], List** parts, float* angx, float* angy, float* angz, void (*h_vd)(), void (*h_ve)(), void (*h_t)());
+void rotT(float* ref[], List** parts, float* angx, float* angy, float* angz);
 void hndlVD(); void hndlVE(); void hndlPE(); void hndlPD(); void hndlT(); void hndlH(); void hndlGlobal();
 void draw(List* obj);
 /* ang_(0)V1D, ang_(1)V2D, ang_(2)V1E, ang_(3)V2E, ang_(4)V3D, ang_(5)V3E, ang_(6)P1D, ang_(7)P2D, ang_(8)P1E, ang_(9)P2E, ang_(10)P3D, ang_(11)P3E, ang_(12)C,
 ang_(13)T, ang_(14)Global */
 float ang_x[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0}; 
 float ang_y[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
-float ang_z[] = {0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
+float ang_z[] = {-75.0 ,0.0 , 75.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0};
+float ang_agx[] = {0.0 ,0.0 ,0.0};
 /* shift_x, shift_y, shift_z */
 float h_shift[3] = {0.0,0.0,0.0};
 
@@ -89,29 +91,70 @@ void rotV3D(float* ref[], List** parts, float* angx, float* angy, float* angz){
 }
 
 void rotP1D(float* ref[], List** parts, float* angx, float* angy, float* angz){
+
 	glPushMatrix();
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
 		glRotatef(angx[0], 1.0, 0.0, 0.0);
 		glRotatef(angy[0], 0.0, 1.0, 0.0);
 		glRotatef(angz[0], 0.0, 0.0, 1.0);
-		glTranslatef(-ref[0][0],-ref[0][1],-ref[0][2]); // V1D
+		glTranslatef(-ref[0][0],-ref[0][1],-ref[0][2]);
 		draw(parts[1]);
-		draw(parts[0]); // BD
+		glPushMatrix();
+			glTranslatef(ref[1][0],ref[1][1],ref[1][2]);
+			glRotatef(ang_agx[2], 1.0, 0.0, 0.0);
+			glTranslatef(-ref[1][0],-ref[1][1],-ref[1][2]);
+			draw(parts[0]);
+		glPopMatrix();
+
 		parts[1] = parts[2]; parts[2] = parts[3]; parts[3] = NULL;
 		rotV2D(ref, parts, angx, angy, angz);
 	glPopMatrix();
 }
-void rotT(float* ref[], List** parts, float* angx, float* angy, float* angz, void (*h_vd)(), void (*h_ve)(), void (*h_t)()){
+float agx_ang_fim; int to_agx = 0; int state_agx = 0; int agx_rep = 3;
+float k_perna =1.0; int agx_count = 0;
+float* agxShift(){
+	float pi = 3.1415926535897932;
+	float sz = (float) sin(ang_agx[2] * pi/180.0) * 2.5;
+	float sy = (float) cos(ang_agx[2] * pi/180.0) * 2.5 - 1.0 * 2.5;
+	float* ret = malloc(2*sizeof(float)); ret[0] = sz; ret[1] = sy;
+	//printf("%f\n", k_perna);
+	return ret;
+}
+void agxEx(){
+	if (to_agx==1){
+
+		if(agx_count<agx_rep){
+	
+			if(state_agx==0){
+				if(ang_agx[2] < agx_ang_fim){
+					ang_agx[2] += delta_ang/5.0;
+				} else{state_agx=1;}
+			}
+			else{
+				if(ang_agx[2] > 0.0){
+					ang_agx[2] -= delta_ang/5.0;
+				} else{state_agx=0; agx_count ++;}			
+			}
+		}
+		else{to_agx = 0; agx_count = 1;}
+	}
+}
+void rotT(float* ref[], List** parts, float* angx, float* angy, float* angz){
+	float* s = agxShift();
+	//printf("sz %f sy %f\n", s[0], s[1]);
+	//printf("AAA\n");
 	glPushMatrix();
+		glTranslatef(0.0, s[1],s[0]);
+
 		glTranslatef(ref[0][0],ref[0][1],ref[0][2]);
 		glRotatef(angx[0], 1.0, 0.0, 0.0);
 		glRotatef(angy[0], 0.0, 1.0, 0.0);
 		glRotatef(angz[0], 0.0, 0.0, 1.0);		
 		glTranslatef(-ref[0][0],-ref[0][1],-ref[0][2]);
 		draw(parts[0]);
-		(void)(*h_vd)();
-		(void)(*h_ve)();
-		(void)(*h_t)();
+		hndlVD();
+		hndlVE();
+		hndlH();
 	glPopMatrix();
 }
 void rotH(float* ref[], List** parts, float* angx, float* angy, float* angz){
@@ -157,7 +200,7 @@ void hndlT(){
 	float* ref[] = {ref_joints[13]};
 	List* parts[] = {(human.parts)[15]};
 	float angx[] = {ang_x[13]}; float angy[] = {ang_y[13]}; float angz[] = {ang_z[13]};
-	rotT(ref, parts, angx, angy, angz, hndlVD, hndlVE, hndlH);
+	rotT(ref, parts, angx, angy, angz);
 }
 
 void hndlH(){
@@ -176,6 +219,11 @@ void hndlGlobal(){
 		glRotatef(angy[0], 0.0, 1.0, 0.0);
 		glRotatef(angz[0], 0.0, 0.0, 1.0);		
 		glTranslatef(-ref[0][0],-ref[0][1],-ref[0][2]);
+		//glPushMatrix();
+		//	glTranslatef(ref_joints[8][0],ref_joints[8][1],ref_joints[8][2]);
+		//	glRotatef(ang_agx[2], 1.0, 0.0, 0.0);
+		//	glTranslatef(-ref_joints[8][0],-ref_joints[8][1],-ref_joints[8][2]);
+		//glPopMatrix();
 		hndlT();
 		hndlPD();
 		hndlPE();
